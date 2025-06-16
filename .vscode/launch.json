@@ -8,7 +8,7 @@
             "type": "chrome",
             "request": "launch",
             "name": "Open index.html",
-            "file": "c:\\Users\\orita\\Downloads\\chrome-dinosaur-game-master\\chrome-dinosaur-game-master\\index.html"
+            "file": "./index.html"
         }
     ]
 }
