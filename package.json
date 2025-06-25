@@ -1,0 +1,25 @@
+{
+  "name": "simple-game-portfolio",
+  "version": "1.0.0",
+  "description": "A website that acts as a portfolio for showcasing projects created.",
+  "main": "client.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/norita0/simple-game-portfolio.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/norita0/simple-game-portfolio/issues"
+  },
+  "homepage": "https://github.com/norita0/simple-game-portfolio#readme",
+  "dependencies": {
+    "express": "^5.1.0",
+    "socket.io": "^4.8.1"
+  }
+}
