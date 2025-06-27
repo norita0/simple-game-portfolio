@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Air Hockey Lobby</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <h1>Air Hockey</h1>
+
+  <div id="main-menu">
+    <input type="text" id="playerName" placeholder="Enter your name" />
+    <button id="randomBtn">Start Random Game</button>
+    <button id="customBtn">Custom Game</button>
+  </div>
+
+  <div id="custom-menu" class="hidden">
+    <button id="createLobbyBtn">Create Lobby</button>
+    <input type="text" id="lobbyInput" placeholder="Enter Lobby ID" />
+    <button id="joinLobbyBtn">Join Lobby</button>
+    <p id="lobbyStatus"></p>
+  </div>
+
+  <div id="status" class="hidden"></div>
+  <canvas id="gameCanvas" width="600" height="400" class="hidden"></canvas>
+  <div id="countdown" class="hidden"></div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="client.js"></script>
+</body>
+</html>
