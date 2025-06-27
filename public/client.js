@@ -1,61 +1,37 @@
-// Connect to the server
 const socket = io();
 
-// Game variables
-let canvas, ctx;
-let myPaddle = { x: 100, y: 250 };
-let opponentPaddle = { x: 100, y: 250 };
-let puck = { x: 300, y: 200 };
-
-// Main Menu Objects
+const playerName = document.getElementById('playerName');
 const randomBtn = document.getElementById('randomBtn');
 const customBtn = document.getElementById('customBtn');
 const createLobbyBtn = document.getElementById('createLobbyBtn');
 const joinLobbyBtn = document.getElementById('joinLobbyBtn');
 const lobbyInput = document.getElementById('lobbyInput');
-const lobbyStatus = document.getElementById('lobbyStatus');
 
 const mainMenu = document.getElementById('main-menu');
 const customMenu = document.getElementById('custom-menu');
+const lobbyStatus = document.getElementById('lobbyStatus');
+const gameCanvas = document.getElementById('gameCanvas');
+const ctx = gameCanvas.getContext('2d');
+const statusEl = document.getElementById('status');
+const countdownEl = document.getElementById('countdown');
 
-// Initialize game
-window.onload = () => {
-  canvas = document.getElementById('gameCanvas');
-  ctx = canvas.getContext('2d');
+let puckLocked = true;
+let puck = { x: 300, y: 200 };
+let paddle = { x: 300, y: 380 };
+let opponent = { x: 300, y: 20 };
 
-  // Start the game loop
-  requestAnimationFrame(gameLoop);
-
-  // Handle mouse movement
-  canvas.addEventListener('mousemove', (e) => {
-    const rect = canvas.getBoundingClientRect();
-    myPaddle.x = e.clientX - rect.left;
-    socket.emit('paddleMove', { x: myPaddle.x });
-  });
-};
-
-// Player clicks on button
-randomBtn.onclick = () => {
-  socket.emit('joinRandom');
-};
-
+randomBtn.onclick = () => socket.emit('joinRandom');
 customBtn.onclick = () => {
   mainMenu.classList.add('hidden');
   customMenu.classList.remove('hidden');
 };
 
-createLobbyBtn.onclick = () => {
-  socket.emit('createLobby');
-};
-
+createLobbyBtn.onclick = () => socket.emit('createLobby');
 joinLobbyBtn.onclick = () => {
-  const lobbyID = lobbyInput.value.trim();
-  if (lobbyID) {
-    socket.emit('joinLobby', lobbyID);
-  }
+  const id = lobbyInput.value.trim();
+  if (id) socket.emit('joinLobby', id);
 };
 
-// Socket responses
 socket.on('lobbyCreated', ({ lobbyID }) => {
   lobbyStatus.textContent = `Lobby created! Share this ID: ${lobbyID}`;
 });
@@ -64,42 +40,82 @@ socket.on('lobbyError', (msg) => {
   lobbyStatus.textContent = `Error: ${msg}`;
 });
 
-socket.on('startGame', ({ roomID }) => {
-  // Replace this with your game initialization logic
-  alert(`Game starting in room: ${roomID}`);
+socket.on('countdownStart', () => {
+  mainMenu.classList.add('hidden');
+  customMenu.classList.add('hidden');
+  gameCanvas.classList.remove('hidden');
+  countdownEl.classList.remove('hidden');
+
+  let count = 3;
+  countdownEl.textContent = count;
+  const interval = setInterval(() => {
+    count--;
+    countdownEl.textContent = count > 0 ? count : 'GO!';
+    if (count < 0) {
+      clearInterval(interval);
+      countdownEl.classList.add('hidden');
+    }
+  }, 1000);
 });
 
-// Receive opponent paddle position
-socket.on('paddleMove', (data) => {
-  opponentPaddle.x = data.x;
+let roomID = null;
+
+socket.on('startGame', (data) => {
+  puckLocked = false;
+  roomID = data.roomID;
+  requestAnimationFrame(gameLoop);
 });
 
-// Optionally receive puck updates from the server
-socket.on('puckUpdate', (data) => {
-  puck.x = data.x;
-  puck.y = data.y;
+
+socket.on('opponentPaddle', (pos) => {
+  opponent.x = pos.x;
+  opponent.y = pos.y;
 });
 
-// Game rendering loop
+socket.on('puckUpdate', (pos) => {
+  if (!puckLocked) {
+    puck.x = pos.x;
+    puck.y = pos.y;
+  }
+});
+
 function gameLoop() {
-  drawGame();
+  ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
+
+  // Draw paddles
+  ctx.fillStyle = 'red';
+  ctx.beginPath();
+  ctx.arc(paddle.x, paddle.y, 30, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.fillStyle = 'blue';
+  ctx.beginPath();
+  ctx.arc(opponent.x, opponent.y, 30, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Draw puck
+  ctx.fillStyle = 'black';
+  ctx.beginPath();
+  ctx.arc(puck.x, puck.y, 15, 0, Math.PI * 2);
+  ctx.fill();
+
   requestAnimationFrame(gameLoop);
 }
 
-function drawGame() {
-  // Clear canvas
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+// Control local paddle
+gameCanvas.addEventListener('mousemove', (e) => {
+  const rect = gameCanvas.getBoundingClientRect();
+  paddle.x = e.clientX - rect.left;
+  paddle.y = e.clientY - rect.top;
 
-  // Draw paddles
-  ctx.fillStyle = 'blue';
-  ctx.fillRect(myPaddle.x - 40, myPaddle.y, 80, 10);
-
-  ctx.fillStyle = 'red';
-  ctx.fillRect(opponentPaddle.x - 40, opponentPaddle.y, 80, 10);
-
-  // Draw puck
-  ctx.beginPath();
-  ctx.arc(puck.x, puck.y, 10, 0, Math.PI * 2);
-  ctx.fillStyle = 'black';
-  ctx.fill();
+  socket.emit('paddleMove', {
+    roomID, // track this when the game starts
+    position: { x: paddle.x, y: paddle.y }
+  });
+  if (!puckLocked) {
+  socket.emit('puckMove', {
+    roomID,
+    position: { x: puck.x, y: puck.y }
+  });
 }
+});

@@ -1,15 +1,31 @@
 body {
-  font-family: sans-serif;
   text-align: center;
-  margin-top: 50px;
+  font-family: sans-serif;
+  background: #222;
+  color: white;
 }
 
-button {
+button, input {
+  padding: 10px;
   margin: 10px;
-  padding: 10px 20px;
   font-size: 16px;
+}
+
+canvas {
+  background: #eee;
+  margin-top: 20px;
 }
 
 .hidden {
   display: none;
+}
+
+#countdown {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 5rem;
+  font-weight: bold;
+  color: white;
 }
