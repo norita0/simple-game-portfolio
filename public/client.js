@@ -7,6 +7,17 @@ let myPaddle = { x: 100, y: 250 };
 let opponentPaddle = { x: 100, y: 250 };
 let puck = { x: 300, y: 200 };
 
+// Main Menu Objects
+const randomBtn = document.getElementById('randomBtn');
+const customBtn = document.getElementById('customBtn');
+const createLobbyBtn = document.getElementById('createLobbyBtn');
+const joinLobbyBtn = document.getElementById('joinLobbyBtn');
+const lobbyInput = document.getElementById('lobbyInput');
+const lobbyStatus = document.getElementById('lobbyStatus');
+
+const mainMenu = document.getElementById('main-menu');
+const customMenu = document.getElementById('custom-menu');
+
 // Initialize game
 window.onload = () => {
   canvas = document.getElementById('gameCanvas');
@@ -22,6 +33,41 @@ window.onload = () => {
     socket.emit('paddleMove', { x: myPaddle.x });
   });
 };
+
+// Player clicks on button
+randomBtn.onclick = () => {
+  socket.emit('joinRandom');
+};
+
+customBtn.onclick = () => {
+  mainMenu.classList.add('hidden');
+  customMenu.classList.remove('hidden');
+};
+
+createLobbyBtn.onclick = () => {
+  socket.emit('createLobby');
+};
+
+joinLobbyBtn.onclick = () => {
+  const lobbyID = lobbyInput.value.trim();
+  if (lobbyID) {
+    socket.emit('joinLobby', lobbyID);
+  }
+};
+
+// Socket responses
+socket.on('lobbyCreated', ({ lobbyID }) => {
+  lobbyStatus.textContent = `Lobby created! Share this ID: ${lobbyID}`;
+});
+
+socket.on('lobbyError', (msg) => {
+  lobbyStatus.textContent = `Error: ${msg}`;
+});
+
+socket.on('startGame', ({ roomID }) => {
+  // Replace this with your game initialization logic
+  alert(`Game starting in room: ${roomID}`);
+});
 
 // Receive opponent paddle position
 socket.on('paddleMove', (data) => {

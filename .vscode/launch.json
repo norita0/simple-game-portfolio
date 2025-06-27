@@ -13,7 +13,7 @@
             "type": "node",
             "request": "launch",
             "name": "Launch Air Hockey Server",
-            "program": "./server.js",
+            "program": "./hockey.js",
             "skipFiles": ["<node_internals>/**"]
         }
     ]
