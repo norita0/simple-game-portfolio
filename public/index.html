@@ -20,9 +20,14 @@
     <p id="lobbyStatus"></p>
   </div>
 
+  <button id="restartBtn" class="hidden">Rematch</button>
+
   <div id="status" class="hidden"></div>
-  <canvas id="gameCanvas" width="600" height="400" class="hidden"></canvas>
+  <div id="gameContainer">
+    <canvas id="gameCanvas" width="500" height="700" class="hidden"></canvas>
+  </div>
   <div id="countdown" class="hidden"></div>
+
 
   <script src="/socket.io/socket.io.js"></script>
   <script src="client.js"></script>
