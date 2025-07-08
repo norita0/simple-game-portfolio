@@ -22,15 +22,8 @@ let puck = {
   vy: 0,
   radius: 15
 };
-let paddle = {
-  x: gameCanvas.width / 2,
-  y: gameCanvas.height - 70 // bottom side, just above goal line
-};
-
-let opponent = {
-  x: gameCanvas.width / 2,
-  y: 70 // top side, just below goal line
-};
+let paddle = { x: gameCanvas.width / 2, y: gameCanvas.height - 70 };
+let opponent = { x: gameCanvas.width / 2, y: 70 };
 let scores = { top: 0, bottom: 0 };
 let playerLabels = ['Opponent', 'You'];
 
@@ -43,16 +36,19 @@ customBtn.onclick = () => {
   mainMenu.classList.add('hidden');
   customMenu.classList.remove('hidden');
 };
-createLobbyBtn.onclick = () => socket.emit('createLobby');
+createLobbyBtn.onclick = () => {
+  socket.emit('createLobby', { name: playerName.value.trim() });
+};
 joinLobbyBtn.onclick = () => {
   const id = lobbyInput.value.trim();
   if (id) {
-    socket.emit('joinLobby', { lobbyID: id, name: playerName.value });
+    socket.emit('joinLobby', { lobbyID: id, name: playerName.value.trim() });
   }
 };
 restartBtn.onclick = () => {
-  socket.emit('joinLobby', { lobbyID: roomID, name: playerName.value });
+  scores = { top: 0, bottom: 0 };
   restartBtn.classList.add('hidden');
+  socket.emit('joinLobby', { lobbyID: roomID, name: playerName.value.trim() });
 };
 
 socket.on('lobbyCreated', ({ lobbyID }) => {
@@ -66,6 +62,7 @@ socket.on('countdownStart', () => {
   customMenu.classList.add('hidden');
   gameCanvas.classList.remove('hidden');
   countdownEl.classList.remove('hidden');
+  countdownEl.style.display = 'block';
   let count = 3;
   countdownEl.textContent = count;
   const interval = setInterval(() => {
@@ -73,7 +70,7 @@ socket.on('countdownStart', () => {
     countdownEl.textContent = count > 0 ? count : 'GO!';
     if (count < 0) {
       clearInterval(interval);
-      countdownEl.classList.add('hidden');
+      countdownEl.style.display = 'none';
     }
   }, 1000);
 });
@@ -86,6 +83,10 @@ socket.on('startGame', ({ roomID: id, hostID, names }) => {
     puck.vx = 4;
     puck.vy = 3;
   }
+  paddle.x = gameCanvas.width / 2;
+  paddle.y = gameCanvas.height - 70;
+  opponent.x = gameCanvas.width / 2;
+  opponent.y = 70;
   requestAnimationFrame(gameLoop);
 });
 
@@ -103,11 +104,13 @@ socket.on('updateScore', ({ scores: newScores }) => {
   scores = newScores;
   puckLocked = true;
 });
+
 socket.on('resetPuck', () => {
   puck.x = gameCanvas.width / 2;
   puck.y = gameCanvas.height / 2;
   puck.vx = 0;
   puck.vy = 0;
+
   setTimeout(() => {
     if (isHost) {
       puck.vx = 4;
@@ -116,28 +119,22 @@ socket.on('resetPuck', () => {
     puckLocked = false;
   }, 800);
 });
+
+socket.on('gameOver', ({ winner }) => {
+  puckLocked = true;
+  const didWin = (isHost && winner === 'bottom') || (!isHost && winner === 'top');
+  ctx.fillStyle = 'black';
+  ctx.font = '48px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText(didWin ? 'You Win!' : 'You Lose 😢', gameCanvas.width / 2, gameCanvas.height / 2);
+  restartBtn.classList.remove('hidden');
+});
 socket.on('playerLeft', () => {
   puckLocked = true;
   restartBtn.classList.remove('hidden');
 });
 
-socket.on('gameOver', ({ winner }) => {
-  puckLocked = true;
-
-  const isPlayerWinner = (isHost && winner === 'bottom') || (!isHost && winner === 'top');
-  const message = isPlayerWinner ? 'You Win!' : 'You Lose';
-
-  ctx.fillStyle = 'black';
-  ctx.font = '48px sans-serif';
-  ctx.textAlign = 'center';
-  ctx.fillText(message, gameCanvas.width / 2, gameCanvas.height / 2);
-
-  restartBtn.classList.remove('hidden');
-});
-
 function gameLoop() {
-  const goalZoneStart = (gameCanvas.width - 100) / 2;
-  const goalZoneEnd = (gameCanvas.width + 100) / 2;
   ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
   drawBoard();
 
@@ -149,26 +146,22 @@ function gameLoop() {
 
     if (puck.x <= puck.radius || puck.x >= gameCanvas.width - puck.radius)
       puck.vx *= -1;
-
     if (puck.y <= puck.radius || puck.y >= gameCanvas.height - puck.radius)
       puck.vy *= -1;
 
-    // Only score if puck is between goal posts and crosses the line
-    if (puck.y <= puck.radius && puck.x >= goalZoneStart && puck.x <= goalZoneEnd) {
-      socket.emit('goalScored', { roomID, scorer: 'bottom' });
-    }
+    const goalStart = (gameCanvas.width - 100) / 2;
+    const goalEnd = (gameCanvas.width + 100) / 2;
 
-    if (puck.y >= gameCanvas.height - puck.radius && puck.x >= goalZoneStart && puck.x <= goalZoneEnd) {
+    if (puck.y <= puck.radius && puck.x >= goalStart && puck.x <= goalEnd)
+      socket.emit('goalScored', { roomID, scorer: 'bottom' });
+
+    if (puck.y >= gameCanvas.height - puck.radius && puck.x >= goalStart && puck.x <= goalEnd)
       socket.emit('goalScored', { roomID, scorer: 'top' });
-    }
 
     checkPaddleCollision(paddle);
     checkPaddleCollision(opponent);
 
-    socket.emit('puckMove', {
-      roomID,
-      position: { x: puck.x, y: puck.y }
-    });
+    socket.emit('puckMove', { roomID, position: { x: puck.x, y: puck.y } });
   }
 
   drawPlayer(opponent, 'blue', playerLabels[0], true);
@@ -185,11 +178,9 @@ function drawBoard() {
   const goalWidth = 100;
   const goalLineThickness = 8;
 
-  // Background
   ctx.fillStyle = '#ffffff';
   ctx.fillRect(0, 0, width, height);
 
-  // Center line
   ctx.strokeStyle = '#000000';
   ctx.lineWidth = 2;
   ctx.beginPath();
@@ -197,29 +188,25 @@ function drawBoard() {
   ctx.lineTo(width, height / 2);
   ctx.stroke();
 
-  // Center circle
   ctx.beginPath();
   ctx.arc(width / 2, height / 2, 50, 0, Math.PI * 2);
   ctx.stroke();
 
-  // Top goal box line
   ctx.lineWidth = goalLineThickness;
   ctx.beginPath();
   ctx.moveTo((width - goalWidth) / 2, 0);
   ctx.lineTo((width + goalWidth) / 2, 0);
   ctx.stroke();
 
-  // Bottom goal box line
   ctx.beginPath();
   ctx.moveTo((width - goalWidth) / 2, height);
   ctx.lineTo((width + goalWidth) / 2, height);
   ctx.stroke();
 
-  // Restore default line width
   ctx.lineWidth = 1;
 }
 
-function drawPlayer(p, color, label, isOpponent = false) {
+function drawPlayer(p, color, label, isOpponent) {
   ctx.fillStyle = color;
   ctx.beginPath();
   ctx.arc(p.x, p.y, 30, 0, Math.PI * 2);
@@ -228,9 +215,8 @@ function drawPlayer(p, color, label, isOpponent = false) {
   ctx.fillStyle = 'black';
   ctx.font = '14px sans-serif';
   ctx.textAlign = 'center';
-
-  const labelOffset = isOpponent ? 45 : -40; // Place opponent label below, yours above
-  ctx.fillText(label, p.x, p.y + labelOffset);
+  const offset = isOpponent ? 45 : -40;
+  ctx.fillText(label, p.x, p.y + offset);
 }
 
 function drawPuck() {
@@ -251,7 +237,7 @@ function checkPaddleCollision(p) {
   const dx = puck.x - p.x;
   const dy = puck.y - p.y;
   const dist = Math.sqrt(dx * dx + dy * dy);
-  const minDist = puck.radius + 30;
+  const minDist = puck.radius + 30
   if (dist < minDist) {
     const angle = Math.atan2(dy, dx);
     const overlap = minDist - dist;

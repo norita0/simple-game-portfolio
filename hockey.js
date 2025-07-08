@@ -10,16 +10,17 @@ const io = new Server(server);
 app.use(express.static('public'));
 
 let waitingPlayer = null;
-const games = {}; // roomID → { players: Set, hostID, scores, names }
+const games = {}; // roomID → { players, hostID, scores, names }
 
 io.on('connection', (socket) => {
   console.log(`🟢 Connected: ${socket.id}`);
 
+  // RANDOM MATCH
   socket.on('joinRandom', () => {
+    if (waitingPlayer?.id === socket.id) return; // Already waiting
+
     if (waitingPlayer) {
       const roomID = `room-${waitingPlayer.id}-${socket.id}`;
-      waitingPlayer.data.name = waitingPlayer.data.name || 'Player 1';
-      socket.data.name = socket.data.name || 'Player 2';
       socket.join(roomID);
       waitingPlayer.join(roomID);
 
@@ -27,19 +28,21 @@ io.on('connection', (socket) => {
         players: new Set([waitingPlayer.id, socket.id]),
         hostID: waitingPlayer.id,
         scores: { top: 0, bottom: 0 },
-        names: {}
+        names: {
+          [waitingPlayer.id]: waitingPlayer.data?.name || 'Player 1',
+          [socket.id]: socket.data?.name || 'Player 2'
+        }
       };
-      const p1 = waitingPlayer?.data?.name || 'Player 1';
-      const p2 = socket?.data?.name || 'Player 2';
-      names: [p2, p1] // note: socket joins second
-      io.to(roomID).emit('countdownStart');
 
+      io.to(roomID).emit('countdownStart');
       setTimeout(() => {
+        const names = [...games[roomID].players].map(id => games[roomID].names[id]);
         io.to(roomID).emit('startGame', {
           roomID,
           hostID: games[roomID].hostID,
-          names: [p2, p1]
+          names
         });
+        io.to(roomID).emit('resetPuck');
       }, 3000);
 
       waitingPlayer = null;
@@ -48,79 +51,78 @@ io.on('connection', (socket) => {
     }
   });
 
-  socket.on('createLobby', () => {
+  // CREATE CUSTOM LOBBY
+  socket.on('createLobby', ({ name }) => {
+    socket.data.name = name;
     const lobbyID = uuidv4().slice(0, 6);
     socket.join(lobbyID);
     games[lobbyID] = {
       players: new Set([socket.id]),
       hostID: socket.id,
       scores: { top: 0, bottom: 0 },
-      names: {}
+      names: { [socket.id]: name }
     };
     socket.emit('lobbyCreated', { lobbyID });
   });
 
+  // JOIN CUSTOM LOBBY
   socket.on('joinLobby', ({ lobbyID, name }) => {
-    const room = io.sockets.adapter.rooms.get(lobbyID);
     const game = games[lobbyID];
-    socket.data.name = name;
-
-    if (room && room.size === 1) {
-      socket.join(lobbyID);
-      game.players.add(socket.id);
-      game.names[socket.id] = name;
-
-      io.to(lobbyID).emit('countdownStart');
-
-      setTimeout(() => {
-        const names = [...game.players].map(id => {
-          const s = io.sockets.sockets.get(id);
-          return s?.data.name || 'Player';
-        });
-        const p1 = waitingPlayer.data.name;
-        const p2 = socket.data.name;
-        io.to(lobbyID).emit('startGame', {
-          roomID: lobbyID,
-          hostID: game.hostID,
-          names : [p2, p1]
-        });
-      }, 3000);
-    } else {
-      socket.emit('lobbyError', 'Lobby not found or full');
+    const room = io.sockets.adapter.rooms.get(lobbyID);
+    if (!game || !room || room.size !== 1) {
+      socket.emit('lobbyError', 'Invalid or full lobby.');
+      return;
     }
+
+    socket.data.name = name;
+    socket.join(lobbyID);
+    game.players.add(socket.id);
+    game.names[socket.id] = name;
+    game.scores = { top: 0, bottom: 0 }; // Reset scores on rematch
+
+    io.to(lobbyID).emit('countdownStart');
+    setTimeout(() => {
+      const names = [...game.players].map(id => game.names[id]);
+      io.to(lobbyID).emit('startGame', {
+        roomID: lobbyID,
+        hostID: game.hostID,
+        names
+      });
+      io.to(lobbyID).emit('resetPuck');
+    }, 3000);
   });
 
+  // PADDLE POSITION SYNC
   socket.on('paddleMove', ({ roomID, position }) => {
     socket.to(roomID).emit('opponentPaddle', position);
   });
 
+  // PUCK POSITION SYNC
   socket.on('puckMove', ({ roomID, position }) => {
     socket.to(roomID).emit('puckUpdate', position);
   });
 
+  // GOAL DETECTION + WIN STATE
   socket.on('goalScored', ({ roomID, scorer }) => {
-  const game = games[roomID];
-  if (!game) return;
+    const game = games[roomID];
+    if (!game) return;
 
-  game.scores[scorer]++;
-  io.to(roomID).emit('updateScore', {
-    scores: game.scores,
-    scorer
+    game.scores[scorer]++;
+    io.to(roomID).emit('updateScore', { scores: game.scores, scorer });
+
+    const { top, bottom } = game.scores;
+    if (top === 7 || bottom === 7) {
+      const winner = top === 7 ? 'top' : 'bottom';
+      io.to(roomID).emit('gameOver', { winner });
+      return;
+    }
+
+    setTimeout(() => {
+      io.to(roomID).emit('resetPuck');
+    }, 1500);
   });
 
-  // End game if someone reaches 7
-  const { top, bottom } = game.scores;
-  if (top === 7 || bottom === 7) {
-    const winner = top === 7 ? 'top' : 'bottom';
-    io.to(roomID).emit('gameOver', { winner });
-    return;
-  }
-
-  setTimeout(() => {
-    io.to(roomID).emit('resetPuck');
-  }, 1500);
-});
-
+  // DISCONNECT HANDLING
   socket.on('disconnect', () => {
     if (waitingPlayer?.id === socket.id) {
       waitingPlayer = null;
@@ -130,12 +132,12 @@ io.on('connection', (socket) => {
       if (game.players.has(socket.id)) {
         game.players.delete(socket.id);
         io.to(roomID).emit('playerLeft');
-        console.log(`🔴 Disconnected: ${socket.id} from ${roomID}`);
+        console.log(`🔴 Disconnected from ${roomID}: ${socket.id}`);
       }
     }
   });
 });
 
 server.listen(3000, () => {
-  console.log('🚀 Server listening on http://localhost:3000');
+  console.log('🚀 Server running on http://localhost:3000');
 });
