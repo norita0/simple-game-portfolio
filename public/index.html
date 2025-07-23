@@ -1,33 +1,60 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Air Hockey Lobby</title>
+  <title>Air Hockey</title>
   <link rel="stylesheet" href="styles.css" />
+  <!-- Font Awesome for settings icon -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-  <h1>Air Hockey</h1>
+  <div class="container">
+    <header>
+      <h1>Air Hockey</h1>
+      <button id="settingsBtn" class="settings-btn"><i class="fas fa-cog"></i></button>
+    </header>
 
-  <div id="main-menu">
-    <input type="text" id="playerName" placeholder="Enter your name" />
-    <button id="randomBtn">Start Random Game</button>
-    <button id="customBtn">Custom Game</button>
+    <div id="main-menu" class="menu-screen">
+      <input type="text" id="playerName" placeholder="Enter your name" class="hidden" />
+      <button id="randomBtn" class="main-btn">Start Random Match</button>
+      <div class="custom-match-buttons">
+        <button id="createLobbyBtn" class="secondary-btn">Create Custom Match</button>
+        <button id="joinCustomBtn" class="secondary-btn">Join Custom Match</button>
+      </div>
+    </div>
+
+    <div id="join-lobby-menu" class="menu-screen hidden">
+      <input type="text" id="lobbyInput" placeholder="Enter Lobby ID" class="lobby-input" />
+      <button id="joinLobbyBtn" class="main-btn">Join Lobby</button>
+      <p id="lobbyError" class="error-message hidden"></p>
+      <button id="backToMainBtn" class="secondary-btn">Back to Main Menu</button>
+    </div>
+
+    <div id="game-screen" class="game-screen hidden">
+      <button id="returnToMenuBtn" class="return-btn hidden">Return to Menu</button>
+      <div id="gameStatus" class="game-status"></div>
+      <div id="lobbyIDDisplay" class="lobby-id-display hidden"></div>
+      <canvas id="gameCanvas" width="500" height="700"></canvas>
+      <div id="playerReadyContainer" class="player-ready-container hidden">
+        <button id="playerReadyBtn" class="ready-btn">Ready</button>
+      </div>
+      <div id="countdown" class="countdown hidden"></div>
+      <button id="rematchBtn" class="rematch-btn hidden">Rematch</button>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="modal hidden">
+      <div class="modal-content">
+        <span class="close-button">&times;</span>
+        <h2>Settings</h2>
+        <div class="setting-item">
+          <label for="modalPlayerName">Player Name:</label>
+          <input type="text" id="modalPlayerName" placeholder="Your Name" />
+        </div>
+        <!-- Add more settings here in the future -->
+        <button id="saveSettingsBtn" class="main-btn">Save Settings</button>
+      </div>
+    </div>
   </div>
-
-  <div id="custom-menu" class="hidden">
-    <button id="createLobbyBtn">Create Lobby</button>
-    <input type="text" id="lobbyInput" placeholder="Enter Lobby ID" />
-    <button id="joinLobbyBtn">Join Lobby</button>
-    <p id="lobbyStatus"></p>
-  </div>
-
-  <button id="restartBtn" class="hidden">Rematch</button>
-
-  <div id="status" class="hidden"></div>
-  <div id="gameContainer">
-    <canvas id="gameCanvas" width="500" height="700" class="hidden"></canvas>
-  </div>
-  <div id="countdown" class="hidden"></div>
-
 
   <script src="/socket.io/socket.io.js"></script>
   <script src="client.js"></script>
