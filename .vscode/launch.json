@@ -7,8 +7,14 @@
         {
             "type": "chrome",
             "request": "launch",
-            "name": "Open index.html",
-            "file": "./index.html"
+            "name": "Open home.html",
+            "file": "./home.html"
+            // "runtimeExecutable": "C:\\Program Files\\nodejs\\node.exe",
+            // "type": "node",
+            // "request": "launch",
+            // "name": "Launch Air Hockey Server",
+            // "program": "./hockey.js",
+            // "skipFiles": ["<node_internals>/**"]
         }
     ]
 }

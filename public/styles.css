@@ -1,0 +1,405 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(135deg, #2a2a72, #009ffd); /* Dark blue to light blue gradient */
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  overflow: hidden; /* Prevent scrollbars */
+}
+
+.container {
+  background: rgba(255, 255, 255, 0.1); /* Slightly transparent white background */
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  width: 90%;
+  max-width: 600px;
+  position: relative;
+  overflow: hidden;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+h1 {
+  font-size: 3em;
+  margin: 0;
+  color: #fff;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  flex-grow: 1; /* Allow title to take available space */
+}
+
+.settings-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.8em;
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out;
+  padding: 10px;
+  border-radius: 50%;
+}
+
+.settings-btn:hover {
+  transform: rotate(45deg);
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.menu-screen, .game-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px; /* Space between elements */
+}
+
+.main-btn, .secondary-btn {
+  padding: 15px 30px;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.2em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 300px;
+}
+
+.main-btn {
+  background: linear-gradient(45deg, #4CAF50, #8BC34A); /* Green gradient */
+  color: white;
+}
+
+.main-btn:hover {
+  background: linear-gradient(45deg, #8BC34A, #4CAF50);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+}
+
+.secondary-btn {
+  background: linear-gradient(45deg, #FF9800, #FFC107); /* Orange gradient */
+  color: white;
+}
+
+.secondary-btn:hover {
+  background: linear-gradient(45deg, #FFC107, #FF9800);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+}
+
+.custom-match-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  width: 100%;
+  flex-wrap: wrap; /* Allow wrapping on smaller screens */
+}
+
+.custom-match-buttons .secondary-btn {
+  flex: 1; /* Distribute space evenly */
+  min-width: 140px; /* Ensure buttons don't get too small */
+}
+
+input[type="text"] {
+  padding: 12px 15px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-size: 1em;
+  width: 100%;
+  max-width: 280px;
+  box-sizing: border-box; /* Include padding in width */
+}
+
+input[type="text"]::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+input[type="text"]:focus {
+  outline: none;
+  border-color: #009ffd;
+  box-shadow: 0 0 8px rgba(0, 159, 253, 0.5);
+}
+
+/* Modal Styles */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1000; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgba(0, 0, 0, 0.6); /* Black w/ opacity */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: linear-gradient(135deg, #3a3a82, #10afef);
+  margin: auto;
+  padding: 30px;
+  border-radius: 15px;
+  width: 80%;
+  max-width: 400px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  position: relative;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.close-button {
+  color: #fff;
+  font-size: 28px;
+  font-weight: bold;
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.close-button:hover,
+.close-button:focus {
+  color: #ff6b6b;
+}
+
+.setting-item {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.setting-item label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 1.1em;
+  color: #e0e0e0;
+}
+
+.setting-item input {
+  width: calc(100% - 20px); /* Adjust for padding */
+}
+
+#saveSettingsBtn {
+  margin-top: 20px;
+}
+
+/* Game Screen Specific Styles */
+.game-screen {
+  position: relative;
+  width: 100%;
+  height: auto;
+  min-height: 600px; /* Ensure some height even if canvas is hidden */
+  display: flex; /* Make it a flex container */
+  flex-direction: column; /* Stack children vertically */
+  align-items: center; /* Center items horizontally */
+  padding-top: 20px; /* Add padding at the top for the button */
+}
+
+#gameCanvas {
+  background: #fff;
+  border: 2px solid #000;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  margin-top: 10px; /* Reduced margin */
+  width: 100%; /* Make canvas responsive */
+  max-width: 500px; /* Max width for larger screens */
+  height: auto; /* Maintain aspect ratio */
+  display: block; /* Remove extra space below canvas */
+}
+
+/* Ensure canvas height scales proportionally */
+@media (min-width: 500px) {
+  #gameCanvas {
+    height: 700px; /* Fixed height for larger screens */
+  }
+}
+
+.game-status {
+  position: absolute;
+  top: 10px; /* Position at the top of the game screen */
+  width: 100%;
+  text-align: center;
+  font-size: 1.5em;
+  font-weight: bold;
+  color: #fff;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+  z-index: 50;
+}
+
+.lobby-id-display {
+  /* Changed color for better visibility */
+  color: #333; /* Dark gray for visibility on white canvas */
+  font-weight: bold;
+  position: absolute;
+  top: 50px; /* Below game status */
+  width: 100%;
+  text-align: center;
+  font-size: 1.2em;
+  z-index: 50;
+}
+
+.player-ready-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  gap: 20px;
+  z-index: 100;
+}
+
+.ready-btn {
+  padding: 15px 40px;
+  font-size: 1.5em;
+  font-weight: bold;
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+  background: linear-gradient(45deg, #00C9FF, #92FE9D); /* Blue-green gradient */
+  color: #333;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+.ready-btn:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+.ready-btn.clicked {
+  background: linear-gradient(45deg, #92FE9D, #00C9FF); /* Reverse gradient */
+  transform: scale(0.95);
+  box-shadow: inset 0 3px 10px rgba(0, 0, 0, 0.3);
+}
+
+.countdown {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 6em;
+  font-weight: bold;
+  color: #ffeb3b; /* Yellow for countdown */
+  text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+  z-index: 110;
+}
+
+.rematch-btn {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 15px 30px;
+  font-size: 1.2em;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(45deg, #673AB7, #9C27B0); /* Purple gradient */
+  color: white;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  z-index: 100;
+}
+
+.rematch-btn:hover {
+  background: linear-gradient(45deg, #9C27B0, #673AB7);
+  transform: translateX(-50%) translateY(-3px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+}
+
+.return-btn {
+  /* Moved out of absolute positioning relative to canvas */
+  position: static; /* Remove absolute positioning */
+  margin-right: auto; /* Push to left within flex container */
+  margin-left: 20px; /* Specific left margin */
+  padding: 10px 20px;
+  font-size: 1em;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(45deg, #F44336, #FF5722); /* Red gradient */
+  color: white;
+  cursor: pointer;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  z-index: 100;
+}
+
+.return-btn:hover {
+  background: linear-gradient(45deg, #FF5722, #F44336);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 12px rgba(0, 0, 0, 0.3);
+}
+
+.error-message {
+  color: #ff6b6b; /* Red text for errors */
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; transform: scale(1); }
+  to { opacity: 0; transform: scale(0.9); }
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  h1 {
+    font-size: 2.5em;
+  }
+
+  .main-btn, .secondary-btn {
+    font-size: 1em;
+    padding: 12px 20px;
+  }
+
+  .custom-match-buttons {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .custom-match-buttons .secondary-btn {
+    width: 100%;
+    max-width: 300px;
+  }
+
+  input[type="text"] {
+    font-size: 0.9em;
+    padding: 10px 12px;
+  }
+
+  .ready-btn {
+    padding: 12px 30px;
+    font-size: 1.2em;
+  }
+
+  .countdown {
+    font-size: 4em;
+  }
+
+  .rematch-btn, .return-btn {
+    font-size: 1em;
+    padding: 10px 20px;
+  }
+}
