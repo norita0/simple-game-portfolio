@@ -9,51 +9,51 @@ let context;
 let text = new Image();
 let pause = true;
 
-//dino
-let dinoRunWidth = 88;
-let dinoRunHeight = 94;
-let dinoDuckWidth = 118;
-let dinoDuckHeight = 60;
-let dinoX = 50;
-let dinoY = boardHeight - dinoRunHeight;
-let dinoImg;
+//daikon
+let daikonRunWidth = 110;
+let daikonRunHeight = 120;
+let daikonDuckWidth = 100; //was 118
+let daikonDuckHeight = 65;
+let daikonX = 30;
+let daikonY = boardHeight - daikonRunHeight;
+let daikonImg;
 let animation = 1;
 let running = true;
 let frameWait = 10;
 
-let dino = {
-    x : dinoX,
-    y : dinoY,
-    width : dinoRunWidth,
-    height : dinoRunHeight
+let daikon = {
+    x : daikonX,
+    y : daikonY,
+    width : daikonRunWidth,
+    height : daikonRunHeight
 }
 
-//cactus
+//tomato
 let entityArray = [];
 
-let cactus1Width = 34;
-let cactus2Width = 69;
-let cactus3Width = 102;
+let tomato1Width = 50; //was 34
+let tomato2Width = 69;
+let tomato3Width = 102;
 
-let cactusHeight = 70;
-let cactusX = 700;
-let cactusY = boardHeight - cactusHeight;
+let tomatoHeight = 70;
+let tomatoX = 700;
+let tomatoY = boardHeight - tomatoHeight;
 
-let cactus1Img;
-let cactus2Img;
-let cactus3Img;
+let tomato1Img;
+let tomato2Img;
+let tomato3Img;
 
-//bird
+//carrot
 
-let birdWidth = 97;
-let birdHeight = 68;
-let birdX = 700;
-let birdY = boardHeight - birdHeight;
+let carrotWidth = 97;
+let carrotHeight = 30;
+let carrotX = 700;
+let carrotY = boardHeight - carrotHeight;
 
-let birdImg;
+let carrotImg;
 
 //physics
-let velocityX = -5; //cactus moving left speed
+let velocityX = -5; //tomato moving left speed
 let velocityY = 0;
 let gravity = .3;
 
@@ -68,31 +68,32 @@ window.onload = function() {
 
     context = board.getContext("2d"); //used for drawing on the board
 
-    //draw initial dinosaur
+    //draw initial daikonsaur
     // context.fillStyle="green";
-    // context.fillRect(dino.x, dino.y, dino.width, dino.height);
+    // context.fillRect(daikon.x, daikon.y, daikon.width, daikon.height);
 
-    dinoImg = new Image();
-    dinoImg.src = "./img/dino.png";
-    dinoImg.onload = function() {
-        context.drawImage(dinoImg, dino.x, dino.y, dino.width, dino.height);
+    daikonImg = new Image();
+    daikonImg.src = "./daikon_img/daikon.png";
+    daikonImg.onload = function() {
+        context.drawImage(daikonImg, daikon.x, daikon.y, daikon.width, daikon.height);
     }
 
-    cactus1Img = new Image();
-    cactus1Img.src = "./img/cactus1.png";
+    tomato1Img = new Image();
+    tomato1Img.src = "./daikon_img/tomato.png";
+    ///////////// ONLY HAVE 1 OBSTACLE //////////////////////////////
+    tomato2Img = new Image();
+    tomato2Img.src = "./daikon_img/tomato.png";
 
-    cactus2Img = new Image();
-    cactus2Img.src = "./img/cactus2.png";
+    tomato3Img = new Image();
+    tomato3Img.src = "./daikon_img/tomato.png";
+    //////////// CHANGE IMAGE ABOVE FOR DIFFERENT OBSTACLES /////////
 
-    cactus3Img = new Image();
-    cactus3Img.src = "./img/cactus3.png";
-
-    birdImg = new Image();
-    birdImg.src = "./img/bird1.png";
+    carrotImg = new Image();
+    carrotImg.src = "./daikon_img/carrot.png";
 
     requestAnimationFrame(update);
-    setInterval(placeCactus, 800); //1000 milliseconds = 1 second
-    document.addEventListener("keydown", moveDino);
+    setInterval(placeTomato, 800); //1000 milliseconds = 1 second
+    document.addEventListener("keydown", moveDaikon);
 }
 
 function update() {
@@ -100,15 +101,15 @@ function update() {
     if (gameOver) { //game over, freeze all entities
         //delete all sprite and redraw in order of sequence
         context.clearRect(0, 0, board.width, board.height);
-        //cactus
+        //tomato
         for (let i = 0; i < entityArray.length; i++) {
-            let cactus = entityArray[i];
-            context.drawImage(cactus.img, cactus.x, cactus.y, cactus.width, cactus.height);
+            let tomato = entityArray[i];
+            context.drawImage(tomato.img, tomato.x, tomato.y, tomato.width, tomato.height);
         }
-        //dino, text, and score
-        dinoImg.src = "./img/dino-dead.png";
+        //daikon, text, and score
+        daikonImg.src = "./daikon_img/daikon-dead.png";
         text.src = "./img/game-over.png";
-        context.drawImage(dinoImg, dino.x, dino.y, dino.width, dino.height);
+        context.drawImage(daikonImg, daikon.x, daikon.y, daikon.width, daikon.height);
         context.drawImage(text, 100, 70, 500, 70);
         context.fillText(score.toFixed(0), 5, 20);
         return;
@@ -123,27 +124,27 @@ function update() {
     else if (frameWait != 0) {       //wait
         frameWait --;
     }
-    else if (dino.y != dinoY && !running) {     //jumping sprite
-        dinoImg.src = "./img/dino.png";
+    else if (daikon.y != daikonY && !running) {     //jumping sprite
+        daikonImg.src = "./daikon_img/daikon.png";
         frameWait = 5;
     }
     else if (running && animation == 1) {       //running animation 1
-        dinoImg.src = "./img/dino-run1.png";
+        daikonImg.src = "./daikon_img/daikon-run1.png";
         animation = 2;
         frameWait = 15;
     }
     else if (running && animation == 2) {       //running animation 2
-        dinoImg.src = "./img/dino-run2.png";
+        daikonImg.src = "./daikon_img/daikon-run2.png";
         animation = 1;
         frameWait = 15;
     }
     else if (animation == 3) {          //ducking animation 1
-        dinoImg.src = "./img/dino-duck1.png";
+        daikonImg.src = "./daikon_img/daikon-duck1.png";
         frameWait = 10;
         animation = 4;
     }
     else if (animation == 4) {      //ducking animation 2
-        dinoImg.src = "./img/dino-duck2.png";
+        daikonImg.src = "./daikon_img/daikon-duck2.png";
         frameWait = 10;
         animation = 3;
     }
@@ -166,7 +167,7 @@ function update() {
     }
     context.clearRect(0, 0, board.width, board.height);
 
-    //dino
+    //daikon
     if (velocityY == -6) {
         velocityY += 2;
     }
@@ -178,46 +179,51 @@ function update() {
     }
 
     ///NEW CODE
-    if (dino.y != dinoY) {  // Dino is in the air
+    if (daikon.y != daikonY) {  // daikon is in the air
         if (!running) {  // If ducking in air, maintain ducking sprite
-            dinoImg.src = "./img/dino-duck1.png"; 
+            daikonImg.src = "./daikon_img/daikon-duck1.png"; 
         } else {  // Otherwise, keep normal jump sprite
-            dinoImg.src = "./img/dino.png";
+            daikonImg.src = "./daikon_img/daikon.png";
         }
     }
 
 
     gravity = Math.max(gravity, 0.01);
-    dino.y = Math.min(dino.y + velocityY, dinoY); //apply gravity to current dino.y, making sure it doesn't exceed the ground
-    temp = dino.y;
-    context.drawImage(dinoImg, dino.x, dino.y, dino.width, dino.height);
+    daikon.y = Math.min(daikon.y + velocityY, daikonY); //apply gravity to current daikon.y, making sure it doesn't exceed the ground
+    temp = daikon.y;
+    context.drawImage(daikonImg, daikon.x, daikon.y, daikon.width, daikon.height);
 
 
     //draw entity
     for (let i = 0; i < entityArray.length; i++) {
         let entity = entityArray[i];
         entity.x += velocityX;
-        if (entity.isBird) {
+
+        ////  mechanism for animating carrot for potiential use:    ////
+        /*
+        if (entity.isCarrot) {
             if (entity.frameWait > 1) {
                 entity.frameWait--;
             } else {
-                entity.img.src = (entity.animation == 1) ? "./img/bird2.png" : "./img/bird1.png";
+                entity.img.src = (entity.animation == 1) ? "./daikon_img/NinjinBlue.png" : "./daikon_img/NinjinBlue.png";
+                // change sprite to allow animation for the Ninjin.
                 entity.animation = (entity.animation == 1) ? 2 : 1;
-                entity.frameWait = 40;  // Reset only **this** bird’s animation timing
+                entity.frameWait = 40;  // Reset only **this** object's animation timing
             }
         }
+        */
 
         context.drawImage(entity.img, entity.x, entity.y, entity.width, entity.height);
         
 
-        if (detectCollision(dino, entity)) {
+        if (detectCollision(daikon, entity)) {
             gameOver = true;
             if (!running) {
                 running = true;
-                dino.width = dinoRunWidth;
-                dino.height = dinoRunHeight;
-                dinoY -= (dinoRunHeight - dinoDuckHeight);
-                dino.y = dinoY;
+                daikon.width = daikonRunWidth;
+                daikon.height = daikonRunHeight;
+                daikonY -= (daikonRunHeight - daikonDuckHeight);
+                daikon.y = daikonY;
             }
         }
     }
@@ -236,22 +242,22 @@ document.addEventListener("keyup", function(event) {
             return;
         }
         running = true;
-        //dinoImg.src = "./img/dino.png";
+        //daikonImg.src = "./daikon_img/daikon.png";
         animation = 1;
-        dino.width = dinoRunWidth;
-        dino.height = dinoRunHeight;
-        dinoY = boardHeight - dino.height;
+        daikon.width = daikonRunWidth;
+        daikon.height = daikonRunHeight;
+        daikonY = boardHeight - daikon.height;
     }
 });
 
-function moveDino(e) {
+function moveDaikon(e) {
     if (gameOver) {
         if ( e.code == "KeyR") {    //restart
             reset();
         }
         return;
     }
-    if ((e.code == "ArrowUp" || e.code == "KeyW") && dino.y == dinoY) { //jump
+    if ((e.code == "ArrowUp" || e.code == "KeyW") && daikon.y == daikonY) { //jump
         gravity = .3;
         velocityY = -6;
     }
@@ -260,12 +266,12 @@ function moveDino(e) {
             return;
         }
         running = false;
-        dinoImg.src = "./img/dino-duck1.png";
+        daikonImg.src = "./daikon_img/daikon-duck1.png";
         animation = 3;
-        dino.width = dinoDuckWidth;
-        dino.height = dinoDuckHeight;
-        dinoY = boardHeight - dino.height;
-        //dinoY -= (dinoRunHeight - dinoDuckHeight);
+        daikon.width = daikonDuckWidth;
+        daikon.height = daikonDuckHeight;
+        daikonY = boardHeight - daikon.height;
+        //daikonY -= (daikonRunHeight - daikonDuckHeight);
     }
     else if (e.code == "Escape") {  //pause
         pause = true;
@@ -275,60 +281,60 @@ function moveDino(e) {
     }
 }
 
-function placeCactus() {
+function placeTomato() {
     if (gameOver) {
         return;
     }
 
-    //place cactus
-    let cactus = {
+    //place tomato
+    let tomato = {
         img : null,
-        x : cactusX,
-        y : cactusY,
+        x : tomatoX,
+        y : tomatoY,
         width : null,
-        height: cactusHeight,
-        isBird : false
+        height: tomatoHeight,
+        isCarrot : false
     }
-    //place bird
-    let bird = {
-        img : birdImg,
-        x : birdX,
+    //place carrot
+    let carrot = {
+        img : carrotImg,
+        x : carrotX,
         y : null,
-        width : birdWidth,
-        height : birdHeight,
-        isBird : true,
+        width : carrotWidth,
+        height : carrotHeight,
+        isCarrot : true,
         animation : 1,
         frameWait : 40
     }
 
     let placeEntityChance = Math.random(); //0 - 0.9999...
 
-    if (placeEntityChance > .80) { //20% you get cactus3
-        cactus.img = cactus3Img;
-        cactus.width = cactus3Width;
-        entityArray.push(cactus);
+    if (placeEntityChance > .80) { //20% you get tomato3
+        tomato.img = tomato3Img;
+        tomato.width = tomato3Width;
+        entityArray.push(tomato);
     }
-    else if (placeEntityChance > .70) {        //10% you get high bird height
-        bird.y = birdY - 110;
-        entityArray.push(bird);
+    else if (placeEntityChance > .60) {        //20% you get high carrot height
+        carrot.y = carrotY - 130;
+        entityArray.push(carrot);
     }
-    else if (placeEntityChance > .60) { //10% you get cactus2
-        cactus.img = cactus2Img;
-        cactus.width = cactus2Width;
-        entityArray.push(cactus);
+    else if (placeEntityChance > .50) { //10% you get tomato2
+        tomato.img = tomato2Img;
+        tomato.width = tomato2Width;
+        entityArray.push(tomato);
     }
-    else if (placeEntityChance > .50) {        //10% you get medium bird height
-        bird.y = birdY - 65;
-        entityArray.push(bird);
+    else if (placeEntityChance > .40) {        //10% you get medium carrot height
+        carrot.y = carrotY - 70 ;
+        entityArray.push(carrot);
     }
-    else if (placeEntityChance > .40) {        //10% you get low bird height
-        bird.y = birdY;
-        entityArray.push(bird);
+    else if (placeEntityChance > .30) {        //10% you get low carrot height
+        carrot.y = carrotY;
+        entityArray.push(carrot);
     }
-    else if (placeEntityChance > .20) { //10% you get cactus1
-        cactus.img = cactus1Img;
-        cactus.width = cactus1Width;
-        entityArray.push(cactus);
+    else if (placeEntityChance > .20) { //10% you get tomato1
+        tomato.img = tomato1Img;
+        tomato.width = tomato1Width;
+        entityArray.push(tomato);
     }
 
     if (entityArray.length > 2) {
@@ -336,19 +342,19 @@ function placeCactus() {
     }
 }
 
-function detectCollision(dino, entity) {
+function detectCollision(daikon, entity) {
     if (!running) {
-        return (rectCollision(dino, entity));
+        return (rectCollision(daikon, entity));
     }
     // Define sub-sections for better collision approximation
-    let dinoHead = { x: dino.x + 20, y: dino.y, width: 48, height: 40 }; // Head section
-    let dinoBody = { x: dino.x + 10, y: dino.y + 40, width: 60, height: 40 }; // Body
-    let dinoLegs = { x: dino.x + 15, y: dino.y + 80, width: 30, height: 20 }; // Legs
+    let daikonHead = { x: daikon.x + 10, y: daikon.y, width: 55 , height: 20 }; // Head section
+    let daikonBody = { x: daikon.x + 20, y: daikon.y + 35, width: 60, height: 60 }; // Body
+    let daikonLegs = { x: daikon.x + 23, y: daikon.y + 95, width: 50, height: 10 }; // Legs 
 
     return (
-        rectCollision(dinoHead, entity) ||
-        rectCollision(dinoBody, entity) ||
-        rectCollision(dinoLegs, entity)
+        rectCollision(daikonHead, entity) ||
+        rectCollision(daikonBody, entity) ||
+        rectCollision(daikonLegs, entity)
     );
 }
 
@@ -360,12 +366,12 @@ function rectCollision(a, b) {
 }
 
 function reset() {
-    dinoImg.src = ".\\img\\dino.png";
+    daikonImg.src = ".\\img\\daikon.png";
     running = true;
     animation = 1;
-    dino.width = dinoRunWidth;
-    dino.height = dinoRunHeight;
-    dinoY = boardHeight - dino.height;
+    daikon.width = daikonRunWidth;
+    daikon.height = daikonRunHeight;
+    daikonY = boardHeight - daikon.height;
     gameOver = false;
     entityArray = [];
     score = 0;
