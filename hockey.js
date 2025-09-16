@@ -5,10 +5,27 @@ const { v4: uuidv4 } = require('uuid');
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server);
+const PORT = process.env.PORT || 3000;
+
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"]
+  }
+});
 
 app.use(express.static('public'));
 
+// Create a new Socket.IO namespace for the air hockey game
+const airHockeyIo = io.of('/air-hockey');
+
+// Create a new Express Router for the air hockey game
+const airHockeyRouter = express.Router();
+
+// Serve static files from the 'public' directory within the new router
+airHockeyRouter.use(express.static('public'));
+
+// Game state and logic moved to be specific to this router's namespace
 let waitingPlayer = null;
 const games = {}; // roomID → { players: Set, hostID, scores, names, readyPlayers: Set, puckLocked: boolean, puck: {x, y, vx, vy} }
 
@@ -323,6 +340,9 @@ io.on('connection', (socket) => {
   });
 });
 
-server.listen(3000, () => {
-  console.log('🚀 Server running on http://localhost:3000');
+// Use the Express router for the '/air-hockey' path
+app.use('/air-hockey', airHockeyRouter);
+
+server.listen(PORT, () => {
+  console.log(`Server listening on port ${PORT}`);
 });
