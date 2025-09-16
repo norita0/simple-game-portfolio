@@ -1,4 +1,4 @@
-const socket = io();
+const socket = io('/air-hockey');
 
 // UI Elements
 const mainMenu = document.getElementById('main-menu');
