@@ -1,7 +1,7 @@
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
-const { airHockeyRouter } = require('./hockey.js');
+const { airHockeyRouter, setup } = require('./hockey.js');
 
 const app = express();
 const server = http.createServer(app);
@@ -16,10 +16,9 @@ const io = new Server(server, {
 });
 
 // Pass the io instance to the hockey game module to create its namespace
-airHockeyRouter.setup(io);
+setup(io);
 
 // Serve static files from the root of the site (e.g., a landing page)
-// You can add your main website files here later
 app.use(express.static('public'));
 
 // Use the air hockey router for the /air-hockey path
