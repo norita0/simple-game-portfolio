@@ -5,16 +5,23 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "chrome",
-            "request": "launch",
-            "name": "Open home.html",
-            "file": "./home.html"
+            ///// -- TEST JUST THE HOCKEY GAME -- /////
+
             // "runtimeExecutable": "C:\\Program Files\\nodejs\\node.exe",
             // "type": "node",
             // "request": "launch",
             // "name": "Launch Air Hockey Server",
             // "program": "./hockey.js",
             // "skipFiles": ["<node_internals>/**"]
+
+            ///// -- LAUCH WEB SERVER -- /////
+            "type": "node",
+            "request": "launch",
+            "name": "Launch Web Server",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}/server.js" 
         }
     ]
 }

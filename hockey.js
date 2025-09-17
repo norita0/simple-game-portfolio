@@ -322,9 +322,6 @@ io.on('connection', (socket) => {
     }
   });
 });
+ return airHockeyRouter;
 };
-
-// Serve static files from the 'public' directory
-airHockeyRouter.use(express.static('public'));
-
 module.exports = { airHockeyRouter };
