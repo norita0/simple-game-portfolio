@@ -1,19 +1,28 @@
-// server.js
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
-const { airHockeyRouter, airHockeyIo } = require('./hockey.js'); // Your existing hockey game
-//const { chessRouter, chessIo } = require('./chess.js'); // The new server-interactive game
+const { airHockeyRouter, setup } = require('./hockey.js');
 
 const app = express();
 const server = http.createServer(app);
 const PORT = process.env.PORT || 3000;
 
-const io = new Server(server, { cors: { origin: "*", methods: ["GET", "POST"] } });
+// The main Socket.IO server instance
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"]
+  }
+});
 
-// Attach the routers to the main app
+// Pass the io instance to the hockey game module to create its namespace
+setup(io);
+
+// Serve static files from the root of the site (e.g., a landing page)
+app.use(express.static('public'));
+
+// Use the air hockey router for the /air-hockey path
 app.use('/air-hockey', airHockeyRouter);
-//app.use('/chess', chessRouter);
 
 server.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
