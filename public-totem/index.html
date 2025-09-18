@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prophecy of the Totem</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #6a1b9a; /* Deep purple */
+      --secondary-color: #ba68c8; /* Lighter purple */
+      --accent-color: #fdd835; /* Gold/yellow */
+      --background-gradient: linear-gradient(135deg, #2c0f45, #1a082c);
+      --font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: var(--font-family);
+      background: var(--background-gradient);
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    .container {
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      text-align: center;
+      width: 90%;
+      max-width: 600px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-size: 3em;
+      margin: 0;
+      color: var(--accent-color);
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      flex-grow: 1;
+      font-weight: 800;
+    }
+
+    .settings-btn {
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 1.5em;
+      cursor: pointer;
+      transition: color 0.3s ease;
+    }
+
+    .settings-btn:hover {
+      color: var(--accent-color);
+    }
+
+    .menu-screen,
+    .game-screen {
+      animation: fadeIn 0.5s ease-out forwards;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .main-btn,
+    .secondary-btn {
+      padding: 15px 30px;
+      font-size: 1.2em;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .main-btn {
+      background: linear-gradient(45deg, var(--accent-color), #ffe082);
+      color: var(--primary-color);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .main-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    .secondary-btn {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .secondary-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .join-lobby-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .lobby-input {
+      width: 100%;
+      padding: 15px;
+      border-radius: 10px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      background: rgba(0, 0, 0, 0.2);
+      color: #fff;
+      font-size: 1.2em;
+      text-align: center;
+    }
+
+    .lobby-input::placeholder {
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .lobby-input:focus {
+      outline: none;
+      border-color: var(--accent-color);
+    }
+    
+    .back-btn {
+      background: none;
+      border: none;
+      color: var(--secondary-color);
+      text-transform: uppercase;
+      font-size: 0.9em;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+
+    /* Modal */
+    .modal {
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .modal-content {
+      background: var(--background-gradient);
+      padding: 30px;
+      border-radius: 20px;
+      max-width: 400px;
+      width: 90%;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      position: relative;
+    }
+
+    .modal-content h2 {
+      margin-top: 0;
+      color: var(--accent-color);
+    }
+
+    .modal-content label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .modal-content input {
+      width: calc(100% - 30px);
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 10px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      background: rgba(0, 0, 0, 0.2);
+      color: #fff;
+      font-size: 1.2em;
+    }
+
+    .modal-content button {
+      width: 100%;
+    }
+
+    .close-button {
+      position: absolute;
+      top: 15px;
+      right: 25px;
+      color: #fff;
+      font-size: 2.5em;
+      font-weight: bold;
+      cursor: pointer;
+      transition: color 0.3s ease;
+    }
+
+    .close-button:hover,
+    .close-button:focus {
+      color: var(--accent-color);
+    }
+    
+    .hidden {
+      display: none !important;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Prophecy of the Totem</h1>
+      <button id="settingsBtn" class="settings-btn"><i class="fas fa-cog"></i></button>
+    </header>
+
+    <!-- Main Menu Screen -->
+    <div id="main-menu" class="menu-screen">
+      <button id="createLobbyBtn" class="main-btn">Create Lobby</button>
+      <button id="joinLobbyBtn" class="secondary-btn">Join Lobby</button>
+    </div>
+
+    <!-- Join Lobby Screen -->
+    <div id="join-lobby-screen" class="menu-screen hidden">
+      <input type="text" id="lobbyInput" placeholder="Enter Lobby ID" class="lobby-input" />
+      <div class="join-lobby-buttons">
+        <button id="submitJoinBtn" class="main-btn">Join</button>
+        <button id="backToMainBtn" class="back-btn">Back</button>
+      </div>
+    </div>
+    
+    <!-- Lobby Screen (Placeholder) -->
+    <div id="lobby-screen" class="game-screen hidden">
+        <h2>Lobby</h2>
+        <p>Your Lobby ID: <span id="lobbyIDDisplay"></span></p>
+        <p>Waiting for another player...</p>
+        <button id="leaveLobbyBtn" class="back-btn">Leave Lobby</button>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="modal hidden">
+      <div class="modal-content">
+        <span class="close-button">&times;</span>
+        <h2>Settings</h2>
+        <div class="setting-item">
+          <label for="modalPlayerName">Player Name:</label>
+          <input type="text" id="modalPlayerName" placeholder="Your Name" />
+        </div>
+        <button id="saveSettingsBtn" class="main-btn">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Get all UI elements
+    const mainMenu = document.getElementById('main-menu');
+    const joinLobbyScreen = document.getElementById('join-lobby-screen');
+    const lobbyScreen = document.getElementById('lobby-screen');
+    const settingsModal = document.getElementById('settingsModal');
+
+    const settingsBtn = document.getElementById('settingsBtn');
+    const createLobbyBtn = document.getElementById('createLobbyBtn');
+    const joinLobbyBtn = document.getElementById('joinLobbyBtn');
+    const submitJoinBtn = document.getElementById('submitJoinBtn');
+    const backToMainBtn = document.getElementById('backToMainBtn');
+    const leaveLobbyBtn = document.getElementById('leaveLobbyBtn');
+
+    const modalPlayerNameInput = document.getElementById('modalPlayerName');
+    const saveSettingsBtn = document.getElementById('saveSettingsBtn');
+    const closeSettingsBtn = settingsModal.querySelector('.close-button');
+    const lobbyIDDisplay = document.getElementById('lobbyIDDisplay');
+
+    let playerName = localStorage.getItem('playerName') || 'Player';
+
+    // Update the player name in the settings modal
+    function updatePlayerName() {
+        modalPlayerNameInput.value = playerName;
+    }
+
+    // Show/hide screens
+    function showScreen(screen) {
+        mainMenu.classList.add('hidden');
+        joinLobbyScreen.classList.add('hidden');
+        lobbyScreen.classList.add('hidden');
+        settingsModal.classList.add('hidden');
+        screen.classList.remove('hidden');
+    }
+
+    // Event Listeners
+    settingsBtn.addEventListener('click', () => {
+        updatePlayerName();
+        settingsModal.classList.remove('hidden');
+    });
+
+    closeSettingsBtn.addEventListener('click', () => {
+        settingsModal.classList.add('hidden');
+    });
+
+    saveSettingsBtn.addEventListener('click', () => {
+        playerName = modalPlayerNameInput.value || 'Player';
+        localStorage.setItem('playerName', playerName);
+        settingsModal.classList.add('hidden');
+    });
+
+    createLobbyBtn.addEventListener('click', () => {
+      // In a real app, this would create a lobby on the server
+      const mockLobbyId = Math.random().toString(36).substring(2, 8).toUpperCase();
+      lobbyIDDisplay.textContent = mockLobbyId;
+      showScreen(lobbyScreen);
+      console.log(`Player ${playerName} created a lobby with ID: ${mockLobbyId}`);
+    });
+
+    joinLobbyBtn.addEventListener('click', () => {
+        showScreen(joinLobbyScreen);
+    });
+    
+    submitJoinBtn.addEventListener('click', () => {
+      const lobbyID = document.getElementById('lobbyInput').value;
+      if (lobbyID.trim() !== '') {
+        // In a real app, this would send a join request to the server
+        lobbyIDDisplay.textContent = lobbyID;
+        showScreen(lobbyScreen);
+        console.log(`Player ${playerName} is attempting to join lobby: ${lobbyID}`);
+      }
+    });
+
+    backToMainBtn.addEventListener('click', () => {
+        showScreen(mainMenu);
+    });
+
+    leaveLobbyBtn.addEventListener('click', () => {
+        showScreen(mainMenu);
+    });
+
+    // Initial state: show the main menu
+    window.onload = () => {
+        showScreen(mainMenu);
+    };
+  </script>
+</body>
+</html>
