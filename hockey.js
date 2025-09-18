@@ -11,39 +11,36 @@ airHockeyRouter.use(express.static('public-hockey'));
 const setup = (io) => {
   airHockeyIo = io.of('/air-hockey');
   
-  // Game state and logic moved to be specific to this router's namespace
   let waitingPlayer = null;
-  const games = {}; // roomID → { players: Set, hostID, scores, names, readyPlayers: Set, puckLocked: boolean, puck: {x, y, vx, vy} }
+  const games = {};
 
   airHockeyIo.on('connection', (socket) => {
     console.log(`🟢 Connected: ${socket.id}`);
 
     // --- RANDOM MATCH ---
     socket.on('joinRandom', ({ name }) => {
-      if (waitingPlayer?.id === socket.id) return; // Already waiting
+      if (waitingPlayer?.id === socket.id) return;
 
-      socket.data.name = name; // Store player name on socket
+      socket.data.name = name;
 
       if (waitingPlayer) {
-        // Match found
         const roomID = `room-${waitingPlayer.id}-${socket.id}`;
         socket.join(roomID);
         waitingPlayer.join(roomID);
 
         games[roomID] = {
           players: new Set([waitingPlayer.id, socket.id]),
-          hostID: waitingPlayer.id, // Host is the first player who joined the random queue
+          hostID: waitingPlayer.id,
           scores: { top: 0, bottom: 0 },
           names: {
             [waitingPlayer.id]: waitingPlayer.data.name || 'Player 1',
             [socket.id]: socket.data.name || 'Player 2'
           },
-          readyPlayers: new Set(), // Track ready state for both players
-          puckLocked: true, // Initialize puck as locked
-          puck: { x: 250, y: 350, vx: 0, vy: 0 } // Initialize puck state on server
+          readyPlayers: new Set(),
+          puckLocked: true,
+          puck: { x: 250, y: 350, vx: 0, vy: 0 }
         };
 
-        // Emit matchFound to both players, including roomID, hostID, and names
         airHockeyIo.to(roomID).emit('matchFound', {
           roomID,
           hostID: games[roomID].hostID,
@@ -51,9 +48,8 @@ const setup = (io) => {
         });
         console.log(`Match found: ${roomID} between ${waitingPlayer.id} and ${socket.id}`);
 
-        waitingPlayer = null; // Clear waiting player
+        waitingPlayer = null;
       } else {
-        // No waiting player, this player waits
         waitingPlayer = socket;
         console.log(`Player ${socket.id} is waiting for a random match.`);
       }
@@ -62,16 +58,16 @@ const setup = (io) => {
     // --- CUSTOM LOBBY ---
     socket.on('createLobby', ({ name }) => {
       socket.data.name = name;
-      const lobbyID = uuidv4().slice(0, 6); // Generate a short, unique ID
+      const lobbyID = uuidv4().slice(0, 6);
       socket.join(lobbyID);
       games[lobbyID] = {
         players: new Set([socket.id]),
-        hostID: socket.id, // Host is the creator of the lobby
+        hostID: socket.id,
         scores: { top: 0, bottom: 0 },
         names: { [socket.id]: name },
         readyPlayers: new Set(),
-        puckLocked: true, // Initialize puck as locked
-        puck: { x: 250, y: 350, vx: 0, vy: 0 } // Initialize puck state on server
+        puckLocked: true,
+        puck: { x: 250, y: 350, vx: 0, vy: 0 }
       };
       socket.emit('lobbyCreated', { lobbyID });
       console.log(`Lobby created: ${lobbyID} by ${socket.id}`);
@@ -154,7 +150,8 @@ const setup = (io) => {
       if (!game) return;
 
       const hostSocketId = game.hostID;
-      const hostSocket = airHockeyIo.sockets.sockets.get(hostSocketId);
+      // FIX: Changed from airHockeyIo.sockets.sockets.get to airHockeyIo.sockets.get
+      const hostSocket = airHockeyIo.sockets.get(hostSocketId);
 
       if (hostSocket && hostSocket.id !== socket.id) {
         game.puck.vx = -vx;
