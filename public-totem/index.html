@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Prophecy of the Totem</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <script src="/socket.io/socket.io.js"></script>
   <style>
     :root {
       --primary-color: #6a1b9a; /* Deep purple */
@@ -50,12 +51,13 @@
     }
 
     h1 {
-      font-size: 3em;
+      font-size: 2.5em; /* Reduced size slightly to fit long title better on mobile */
       margin: 0;
       color: var(--accent-color);
       text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
       flex-grow: 1;
       font-weight: 800;
+      line-height: 1.2;
     }
 
     .settings-btn {
@@ -148,6 +150,12 @@
       margin-top: 10px;
       cursor: pointer;
     }
+    
+    .error-message {
+      color: #ff6b6b; /* Red text for errors */
+      font-weight: bold;
+      margin-top: 10px;
+    }
 
     /* Modal */
     .modal {
@@ -221,6 +229,43 @@
       display: none !important;
     }
 
+    /* Game Screen specific styles */
+    #gameCanvas {
+        width: 100%;
+        max-width: 500px;
+        height: 500px;
+        background-color: #0d0615;
+        border: 4px solid var(--accent-color);
+        border-radius: 10px;
+        box-shadow: 0 0 15px rgba(253, 216, 53, 0.5);
+        margin: 15px auto;
+    }
+    
+    .player-list {
+        list-style: none;
+        padding: 0;
+        margin: 10px 0;
+    }
+
+    .player-list li {
+        padding: 8px;
+        margin-bottom: 5px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 5px;
+        font-weight: bold;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .host-badge {
+        font-size: 0.8em;
+        padding: 2px 6px;
+        background-color: var(--accent-color);
+        color: var(--primary-color);
+        border-radius: 5px;
+    }
+
     /* Animations */
     @keyframes fadeIn {
       from { opacity: 0; transform: scale(0.95); }
@@ -240,23 +285,36 @@
     <div id="main-menu" class="menu-screen">
       <button id="createLobbyBtn" class="main-btn">Create Lobby</button>
       <button id="joinLobbyBtn" class="secondary-btn">Join Lobby</button>
+      <p id="connectionStatus" style="font-size: 0.8em; color: var(--secondary-color);">Connecting...</p>
     </div>
 
     <!-- Join Lobby Screen -->
     <div id="join-lobby-screen" class="menu-screen hidden">
       <input type="text" id="lobbyInput" placeholder="Enter Lobby ID" class="lobby-input" />
+      <p id="lobbyError" class="error-message hidden">Lobby error message</p>
       <div class="join-lobby-buttons">
         <button id="submitJoinBtn" class="main-btn">Join</button>
         <button id="backToMainBtn" class="back-btn">Back</button>
       </div>
     </div>
     
-    <!-- Lobby Screen (Placeholder) -->
+    <!-- Lobby Screen -->
     <div id="lobby-screen" class="game-screen hidden">
-        <h2>Lobby</h2>
-        <p>Your Lobby ID: <span id="lobbyIDDisplay"></span></p>
-        <p>Waiting for another player...</p>
-        <button id="leaveLobbyBtn" class="back-btn">Leave Lobby</button>
+        <h2>Lobby: <span id="lobbyIDDisplay">...</span></h2>
+        <p>Current Players:</p>
+        <ul id="playerList" class="player-list">
+            <!-- Player list populated by JS -->
+        </ul>
+        <button id="playerReadyBtn" class="main-btn">Ready</button>
+        <p id="waitingStatus"></p>
+        <button id="leaveLobbyBtn" class="secondary-btn">Leave Lobby</button>
+    </div>
+
+    <!-- Game Screen (Placeholder) -->
+    <div id="game-view" class="game-screen hidden">
+        <h2>Prophecy Game (In Progress)</h2>
+        <canvas id="gameCanvas" width="500" height="500"></canvas>
+        <button id="returnToMenuBtn" class="secondary-btn">Return to Menu</button>
     </div>
 
     <!-- Settings Modal -->
@@ -274,10 +332,15 @@
   </div>
 
   <script>
-    // Get all UI elements
+    // --- Socket.IO Initialization ---
+    // Connect to the specific namespace for this game
+    const socket = io('/totem-of-prophecy');
+
+    // --- UI Elements ---
     const mainMenu = document.getElementById('main-menu');
     const joinLobbyScreen = document.getElementById('join-lobby-screen');
     const lobbyScreen = document.getElementById('lobby-screen');
+    const gameView = document.getElementById('game-view');
     const settingsModal = document.getElementById('settingsModal');
 
     const settingsBtn = document.getElementById('settingsBtn');
@@ -285,30 +348,155 @@
     const joinLobbyBtn = document.getElementById('joinLobbyBtn');
     const submitJoinBtn = document.getElementById('submitJoinBtn');
     const backToMainBtn = document.getElementById('backToMainBtn');
+    const lobbyErrorEl = document.getElementById('lobbyError');
+    const lobbyIDDisplay = document.getElementById('lobbyIDDisplay');
+    const playerListEl = document.getElementById('playerList');
+    const playerReadyBtn = document.getElementById('playerReadyBtn');
+    const waitingStatusEl = document.getElementById('waitingStatus');
     const leaveLobbyBtn = document.getElementById('leaveLobbyBtn');
+    const returnToMenuBtn = document.getElementById('returnToMenuBtn');
+    const connectionStatusEl = document.getElementById('connectionStatus');
 
     const modalPlayerNameInput = document.getElementById('modalPlayerName');
     const saveSettingsBtn = document.getElementById('saveSettingsBtn');
     const closeSettingsBtn = settingsModal.querySelector('.close-button');
-    const lobbyIDDisplay = document.getElementById('lobbyIDDisplay');
 
-    let playerName = localStorage.getItem('playerName') || 'Player';
+    // --- State Variables ---
+    let playerName = localStorage.getItem('totemPlayerName') || 'Player' + Math.floor(Math.random() * 100);
+    let currentLobbyID = null;
+    let isHost = false;
 
-    // Update the player name in the settings modal
+    // --- Utility Functions ---
     function updatePlayerName() {
         modalPlayerNameInput.value = playerName;
     }
 
-    // Show/hide screens
-    function showScreen(screen) {
+    function showScreen(screen, errorMsg = '') {
+        // Hide all major screens
         mainMenu.classList.add('hidden');
         joinLobbyScreen.classList.add('hidden');
         lobbyScreen.classList.add('hidden');
+        gameView.classList.add('hidden');
         settingsModal.classList.add('hidden');
+        
+        // Hide error message unless explicitly needed
+        lobbyErrorEl.classList.add('hidden');
+        lobbyErrorEl.textContent = '';
+        
+        // Show the requested screen
         screen.classList.remove('hidden');
+
+        // Show error message if provided
+        if (screen === joinLobbyScreen && errorMsg) {
+            lobbyErrorEl.textContent = errorMsg;
+            lobbyErrorEl.classList.remove('hidden');
+        }
+    }
+    
+    function updatePlayerList(players, hostID) {
+        playerListEl.innerHTML = '';
+        for (const [id, name] of Object.entries(players)) {
+            const listItem = document.createElement('li');
+            listItem.textContent = name;
+            if (id === hostID) {
+                listItem.innerHTML += ' <span class="host-badge">Host</span>';
+            }
+            if (id === socket.id) {
+                listItem.textContent += ' (You)';
+            }
+            playerListEl.appendChild(listItem);
+        }
     }
 
-    // Event Listeners
+
+    // --- Socket.IO Event Handlers ---
+
+    socket.on('connect', () => {
+        connectionStatusEl.textContent = 'Connected. ID: ' + socket.id;
+        connectionStatusEl.style.color = '#76ff03'; // Green for connected
+        showScreen(mainMenu);
+    });
+
+    socket.on('disconnect', () => {
+        connectionStatusEl.textContent = 'Disconnected. Reconnecting...';
+        connectionStatusEl.style.color = '#ff6b6b'; // Red for disconnected
+        currentLobbyID = null;
+        isHost = false;
+        showScreen(mainMenu);
+    });
+
+    socket.on('lobbyCreated', ({ lobbyID }) => {
+        currentLobbyID = lobbyID;
+        isHost = true;
+        lobbyIDDisplay.textContent = lobbyID;
+        waitingStatusEl.textContent = 'Waiting for an opponent to join...';
+        showScreen(lobbyScreen);
+        playerReadyBtn.classList.add('hidden'); // Only show ready when 2 players are in
+        console.log(`Lobby created: ${lobbyID}`);
+    });
+
+    socket.on('lobbyError', (message) => {
+        showScreen(joinLobbyScreen, message);
+        console.error('Lobby Error:', message);
+    });
+
+    socket.on('matchFound', ({ roomID, hostID, names }) => {
+        currentLobbyID = roomID;
+        isHost = (socket.id === hostID);
+        lobbyIDDisplay.textContent = roomID;
+        updatePlayerList(names, hostID);
+
+        // Show the ready button and update status for game prep
+        playerReadyBtn.classList.remove('hidden'); 
+        playerReadyBtn.textContent = 'Ready';
+        playerReadyBtn.disabled = false;
+        waitingStatusEl.textContent = `Opponent: ${names[hostID !== socket.id ? hostID : Object.keys(names).find(id => id !== hostID)]}`;
+        
+        showScreen(lobbyScreen);
+        console.log(`Match found in room: ${roomID}`);
+    });
+    
+    socket.on('opponentReady', () => {
+        waitingStatusEl.textContent = 'Opponent is ready! Waiting for you...';
+        playerReadyBtn.textContent = 'Ready';
+    });
+
+    socket.on('countdownStart', () => {
+        waitingStatusEl.textContent = 'Game starting in... 3';
+        playerReadyBtn.classList.add('hidden');
+
+        let count = 2;
+        const countdownInterval = setInterval(() => {
+            waitingStatusEl.textContent = `Game starting in... ${count}`;
+            if (count <= 0) {
+                clearInterval(countdownInterval);
+            }
+            count--;
+        }, 1000);
+    });
+
+    socket.on('startGame', ({ roomID, hostID, names }) => {
+        // The core game starts here, for now it's just a view change
+        playerReadyBtn.classList.add('hidden');
+        waitingStatusEl.textContent = '';
+        showScreen(gameView);
+        console.log(`Game started in room: ${roomID}`);
+    });
+
+    socket.on('playerLeft', () => {
+        // Handle when opponent leaves mid-game or in lobby
+        currentLobbyID = null;
+        isHost = false;
+        // Using a custom modal/message box instead of alert
+        const message = 'Your opponent left the game.';
+        // In a real app, show a nice modal here. For now, log and change screen.
+        console.log(message);
+        showScreen(mainMenu);
+    });
+
+
+    // --- UI Event Listeners ---
+
     settingsBtn.addEventListener('click', () => {
         updatePlayerName();
         settingsModal.classList.remove('hidden');
@@ -319,31 +507,45 @@
     });
 
     saveSettingsBtn.addEventListener('click', () => {
-        playerName = modalPlayerNameInput.value || 'Player';
-        localStorage.setItem('playerName', playerName);
+        // Save the name and emit a state update if in a game/lobby (future feature)
+        playerName = modalPlayerNameInput.value || 'Player' + Math.floor(Math.random() * 100);
+        localStorage.setItem('totemPlayerName', playerName);
         settingsModal.classList.add('hidden');
+        // socket.emit('updateName', { name: playerName, roomID: currentLobbyID }); // Future feature
     });
 
     createLobbyBtn.addEventListener('click', () => {
-      // In a real app, this would create a lobby on the server
-      const mockLobbyId = Math.random().toString(36).substring(2, 8).toUpperCase();
-      lobbyIDDisplay.textContent = mockLobbyId;
-      showScreen(lobbyScreen);
-      console.log(`Player ${playerName} created a lobby with ID: ${mockLobbyId}`);
+      if (socket.connected) {
+        socket.emit('createLobby', { name: playerName });
+      } else {
+        connectionStatusEl.textContent = 'Error: Not connected to server.';
+      }
     });
 
     joinLobbyBtn.addEventListener('click', () => {
         showScreen(joinLobbyScreen);
+        document.getElementById('lobbyInput').focus();
     });
     
     submitJoinBtn.addEventListener('click', () => {
-      const lobbyID = document.getElementById('lobbyInput').value;
-      if (lobbyID.trim() !== '') {
-        // In a real app, this would send a join request to the server
-        lobbyIDDisplay.textContent = lobbyID;
-        showScreen(lobbyScreen);
-        console.log(`Player ${playerName} is attempting to join lobby: ${lobbyID}`);
+      const lobbyID = document.getElementById('lobbyInput').value.trim();
+      if (lobbyID !== '') {
+        if (socket.connected) {
+            socket.emit('joinLobby', { lobbyID, name: playerName });
+            // Clear input
+            document.getElementById('lobbyInput').value = ''; 
+        } else {
+            showScreen(joinLobbyScreen, 'Error: Not connected to server.');
+        }
       }
+    });
+
+    playerReadyBtn.addEventListener('click', () => {
+        if (currentLobbyID && socket.connected) {
+            playerReadyBtn.textContent = 'Waiting for opponent...';
+            playerReadyBtn.disabled = true;
+            socket.emit('playerReady', { roomID: currentLobbyID });
+        }
     });
 
     backToMainBtn.addEventListener('click', () => {
@@ -351,12 +553,28 @@
     });
 
     leaveLobbyBtn.addEventListener('click', () => {
+        if (currentLobbyID) {
+            socket.emit('leaveGame', { roomID: currentLobbyID });
+        }
+        currentLobbyID = null;
+        isHost = false;
+        showScreen(mainMenu);
+    });
+    
+    returnToMenuBtn.addEventListener('click', () => {
+        // This button handles returning from the game view
+        if (currentLobbyID) {
+            socket.emit('leaveGame', { roomID: currentLobbyID });
+        }
+        currentLobbyID = null;
+        isHost = false;
         showScreen(mainMenu);
     });
 
     // Initial state: show the main menu
     window.onload = () => {
         showScreen(mainMenu);
+        updatePlayerName();
     };
   </script>
 </body>
