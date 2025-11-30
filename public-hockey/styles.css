@@ -2,8 +2,9 @@ body {
   margin: 0;
   padding: 0;
   font-family: 'Inter', sans-serif;
-  background: linear-gradient(135deg, #2a2a72, #009ffd); /* Dark blue to light blue gradient */
-  color: #fff;
+  /* Use the main site flat background color to match the portfolio */
+  background: #e8f8fb;
+  color: #404364;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -33,15 +34,14 @@ header {
 h1 {
   font-size: 3em;
   margin: 0;
-  color: #fff;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  color: #404364;
   flex-grow: 1; /* Allow title to take available space */
 }
 
 .settings-btn {
   background: none;
   border: none;
-  color: #fff;
+  color: #525053;
   font-size: 1.8em;
   cursor: pointer;
   transition: transform 0.2s ease-in-out;
@@ -75,25 +75,27 @@ h1 {
 }
 
 .main-btn {
-  background: linear-gradient(45deg, #4CAF50, #8BC34A); /* Green gradient */
-  color: white;
+  /* Primary action: flat green to match main site accents */
+  background: #a2d595;
+  color: #ffffff;
 }
 
 .main-btn:hover {
-  background: linear-gradient(45deg, #8BC34A, #4CAF50);
+  background: #8fc07a;
   transform: translateY(-3px);
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
 }
 
 .secondary-btn {
-  background: linear-gradient(45deg, #FF9800, #FFC107); /* Orange gradient */
-  color: white;
+  /* Secondary action: flat blue to match main site's link color */
+  background: #a6e1ff;
+  color: #ffffff;
 }
 
 .secondary-btn:hover {
-  background: linear-gradient(45deg, #FFC107, #FF9800);
+  background: #a6e1ff;
   transform: translateY(-3px);
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
 }
 
 .custom-match-buttons {
@@ -111,10 +113,10 @@ h1 {
 
 input[type="text"] {
   padding: 12px 15px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(0,0,0,0.08);
   border-radius: 8px;
-  background-color: rgba(255, 255, 255, 0.1);
-  color: #fff;
+  background-color: #ffffff;
+  color: #404364;
   font-size: 1em;
   width: 100%;
   max-width: 280px;
@@ -122,13 +124,13 @@ input[type="text"] {
 }
 
 input[type="text"]::placeholder {
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(64, 67, 100, 0.45);
 }
 
 input[type="text"]:focus {
   outline: none;
-  border-color: #009ffd;
-  box-shadow: 0 0 8px rgba(0, 159, 253, 0.5);
+  border-color: #3153ff;
+  box-shadow: 0 0 6px rgba(49,83,255,0.12);
 }
 
 /* Modal Styles */
@@ -148,13 +150,14 @@ input[type="text"]:focus {
 }
 
 .modal-content {
-  background: linear-gradient(135deg, #3a3a82, #10afef);
+  /* Flat, neutral modal background that matches the main site */
+  background: #ffffff;
   margin: auto;
   padding: 30px;
   border-radius: 15px;
   width: 80%;
   max-width: 400px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
   position: relative;
   animation: fadeIn 0.3s ease-out;
 }
@@ -267,21 +270,22 @@ input[type="text"]:focus {
   border: none;
   border-radius: 15px;
   cursor: pointer;
-  background: linear-gradient(45deg, #00C9FF, #92FE9D); /* Blue-green gradient */
-  color: #333;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  /* Ready button uses flat green to match main site */
+  background: #a2d595;
+  color: #ffffff;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
   transition: all 0.3s ease;
 }
 
 .ready-btn:hover {
   transform: translateY(-5px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
 }
 
 .ready-btn.clicked {
-  background: linear-gradient(45deg, #92FE9D, #00C9FF); /* Reverse gradient */
+  background: #8fc07a;
   transform: scale(0.95);
-  box-shadow: inset 0 3px 10px rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 3px 10px rgba(0, 0, 0, 0.06);
 }
 
 .countdown {
@@ -305,18 +309,18 @@ input[type="text"]:focus {
   font-size: 1.2em;
   border: none;
   border-radius: 10px;
-  background: linear-gradient(45deg, #673AB7, #9C27B0); /* Purple gradient */
+  background: #3153ff; /* flat blue for rematch */
   color: white;
   cursor: pointer;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
   transition: all 0.3s ease;
   z-index: 100;
 }
 
 .rematch-btn:hover {
-  background: linear-gradient(45deg, #9C27B0, #673AB7);
+  background: #254eda;
   transform: translateX(-50%) translateY(-3px);
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
 }
 
 .return-btn {
@@ -328,18 +332,18 @@ input[type="text"]:focus {
   font-size: 1em;
   border: none;
   border-radius: 8px;
-  background: linear-gradient(45deg, #F44336, #FF5722); /* Red gradient */
+  background: #f44336; /* flat red for return */
   color: white;
   cursor: pointer;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
   transition: all 0.3s ease;
   z-index: 100;
 }
 
 .return-btn:hover {
-  background: linear-gradient(45deg, #FF5722, #F44336);
+  background: #e53935;
   transform: translateY(-2px);
-  box-shadow: 0 5px 12px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 5px 12px rgba(0, 0, 0, 0.08);
 }
 
 .error-message {

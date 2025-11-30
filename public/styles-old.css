@@ -1,0 +1,186 @@
+css
+body {
+  font-size: 1.225rem;
+}
+
+header h1, .daikon-title, .footer-title {
+  /* Keep as is to maintain title size */
+}
+
+h2 {
+  font-size: 2rem;
+}
+
+h3 {
+  font-size: 1.35rem;
+}
+
+.card, .about-card, .dev-card, .project-card {
+  font-size: 1.18rem;
+}
+
+.project-icon {
+  font-size: 1.08em;
+}
+
+a, .dev-btn, .contact {
+  font-size: 1.08em;
+}
+
+@media (max-width: 900px) {
+  body { font-size: 1rem; }
+  h2 { font-size: 1.5rem; }
+  h3 { font-size: 1.12rem; }
+  .card { font-size: 1.03rem; }
+}
+
+body {
+  background: #e6f4fa;
+  font-family: 'Nunito', Arial, sans-serif;
+  color: #222;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+
+header {
+  margin-top: 2vw;
+}
+
+.daikon-title, .footer-title {
+  font-size: 2.7em;
+  font-weight: 800;
+  color: #3a435e;
+  font-family: 'Fredoka One', Arial, sans-serif;
+}
+
+main {
+  width: 98vw;
+  max-width: 850px;
+  margin: auto;
+}
+
+.card {
+  margin: 2em auto;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  padding: 1.5em 2em;
+  width: 100%;
+  max-width: 650px;
+  position: relative;
+  text-align: left;
+}
+
+.dev-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2.5em;
+  min-height: 120px;
+  padding: 1.8em 2em;
+}
+
+.daikon-side {
+  width: 82px; /* Larger image size */
+  height: auto;
+}
+
+.dev-info {
+  flex: 1;
+}
+
+.dev-info h2 {
+  margin-bottom: 0.7em;
+  font-size: 2.2rem;
+  font-weight: bold;
+}
+
+.left { margin-right: 1.5em; }
+.right { margin-left: 1.5em; }
+
+.dev-card ul { margin: 0; padding-left: 1em; }
+
+.dev-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-bottom: 0.8em;
+  gap: 1.6em;
+  font-size: 1.24em;
+}
+
+.dev-row span {
+  min-width: 265px;  /* Adjust to align both rows nicely */
+  display: inline-block;
+}
+
+.dev-btn {
+  background: #b9e6c9;
+  color: #284B63;
+  border: none;
+  border-radius: 12px;
+  padding: 0.38em 1.5em;
+  font-weight: bold;
+  font-size: 1.02em;
+  margin-left: 2em;
+  white-space: nowrap;
+}
+.about-card { margin-bottom: 2em; }
+
+.project-header {
+  margin: 2.5em 0 1em 0;
+  color: #46649a;
+  font-size: 2em;
+}
+
+.project-card {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 1.5em;
+}
+.project-icon {
+  background: #fafafc;
+  border-radius: 10px;
+  min-width: 60px;
+  min-height: 60px;
+  border: 1.2px solid #bbb;
+  font-size: 1em;
+  font-weight: 700;
+  text-align: center;
+  padding: 0.5em 0.3em;
+  margin: 0.7em 0;
+  color: #537178;
+  line-height: 1.1em;
+}
+.yellow-card { background: #fffedb; }
+.pink-card { background: #ffd9dd; }
+
+h3 { margin: 0.2em 0 0.4em 0; }
+a { color: #414197; font-weight: bold; text-decoration: underline; }
+
+.contact {
+  margin: 3em auto 2em auto;
+  max-width: 400px;
+  padding: 1em;
+  text-align: left;
+}
+.contact h3 { margin-bottom: 0.2em; }
+.contact p { margin: 0; }
+
+.footer-title {
+  margin-top: 2em;
+  font-family: 'Fredoka One', sans-serif;
+  color: #3a435e;
+  text-align: center;
+  font-size: 2em;
+  margin-bottom: 1em;
+}
+
+@media (max-width: 900px) {
+  main { max-width: 99vw; }
+  .card { padding: 1em 0.6em; }
+  .project-card { flex-direction: column; gap: 0.7em; }
+  .project-icon { margin: auto; }
+}
