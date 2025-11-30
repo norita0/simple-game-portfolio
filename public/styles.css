@@ -1,0 +1,421 @@
+.home-screen-ver3 {
+  	width: 100%;
+  	max-width: 1488px;
+  	margin: 0 auto; /* center the page container */
+  	height: 2803px;
+  	position: relative;
+  	background-color: transparent;
+  	overflow: hidden;
+  	text-align: left;
+   	font-size: 32px;
+  	color: #404364;
+  	/* Use Libre Franklin for body text, fallback to common system fonts */
+  	font-family: 'Libre Franklin', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+/* Make the page background span the full viewport so the blue fills left/right */
+body {
+  background-color: #e8f8fb;
+}
+.home-screen-ver3-child {
+  	position: absolute;
+  	top: 376px;
+  	left: 57px;
+  	border-radius: 32px;
+  	background-color: #fff;
+  	width: 1299px;
+  	height: 485px;
+}
+.dino-game-air {
+  	position: absolute;
+  	top: 220px;
+  	left: -716px;
+   	font-size: 40px;
+   	font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+.home-screen-ver3-item {
+  	position: absolute;
+  	top: 473px;
+  	left: 823px;
+  	border-radius: 22px;
+  	background-color: #a2d595;
+  	width: 318px;
+  	height: 74px;
+}
+.nagato {
+  	position: absolute;
+  	top: 480px;
+  	left: 827px;
+  	font-size: 36px;
+  	font-weight: 800;
+  	color: #fff;
+  	text-align: center;
+  	display: flex;
+  	align-items: center;
+  	justify-content: center;
+  	width: 298.9px;
+  	height: 61px;
+}
+.home-screen-ver3-inner {
+  	position: absolute;
+  	top: 677px;
+  	left: 816px;
+  	border-radius: 22px;
+  	background-color: #a2d595;
+  	width: 318px;
+  	height: 74px;
+}
+.sakura {
+  	position: absolute;
+  	top: 692px;
+  	left: 834px;
+  	font-size: 36px;
+  	font-weight: 800;
+  	color: #fff;
+  	text-align: center;
+  	display: flex;
+  	align-items: center;
+  	justify-content: center;
+  	width: 285px;
+}
+.programming-ui-ux {
+  	position: absolute;
+  	top: 575px;
+  	left: 838px;
+   	font-size: 24px;
+   	font-weight: 600;
+   	font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+.uiux-design-game {
+  	position: absolute;
+  	top: 774px;
+  	left: 842px;
+   	font-size: 24px;
+   	font-weight: 600;
+   	font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+.we-are-two {
+  	position: absolute;
+  	top: 482px;
+  	left: 150px;
+   	font-size: 24px;
+   	line-height: 34px;
+   	font-weight: 600;
+   	font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  	display: inline-block;
+  	width: 558px;
+  	height: 388px;
+}
+.daikon-run2-1-icon {
+  	position: absolute;
+  	top: 753px;
+  	left: 38px;
+  	width: 235px;
+  	height: 235px;
+  	object-fit: cover;
+}
+.frame-div {
+  	position: absolute;
+  	top: 248px;
+  	left: 38px;
+  	width: 2px;
+  	height: 1px;
+  	overflow: hidden;
+}
+.daikongamesgmailcom {
+  	position: absolute;
+  	top: 2598px;
+  	left: 95px;
+	font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  	color: #000;
+  	display: inline-block;
+  	width: 450px;
+  	height: 37px;
+  	text-decoration: none;
+}
+.image-10-icon {
+  	position: absolute;
+  	top: 2603px;
+  	left: 51px;
+  	width: 32px;
+  	height: 32px;
+  	object-fit: cover;
+}
+.image-9-icon {
+  	position: absolute;
+  	top: 2675px;
+  	left: 53px;
+  	width: 31px;
+  	height: 31px;
+  	object-fit: cover;
+}
+.daikongames1234 {
+  	position: absolute;
+  	top: 2667px;
+  	left: 96px;
+	font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  	color: #000;
+  	display: inline-block;
+  	width: 423px;
+  	height: 45px;
+}
+.contact-us {
+  	position: absolute;
+  	top: 2526px;
+  	left: 51px;
+  	display: inline-block;
+	font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  	color: #000;
+  	width: 434px;
+  	height: 40px;
+}
+.daikon-jump-1-icon {
+  	position: absolute;
+  	top: 6px;
+  	left: 19px;
+  	width: 192px;
+  	height: 192px;
+  	object-fit: cover;
+}
+.daikongames {
+  	position: absolute;
+  	top: 102px;
+  	left: 25px;
+  	letter-spacing: 0.04em;
+  	font-family: 'Lapsus Pro';
+  	text-align: center;
+  	text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+.daikon-games-logo-1 {
+  	position: absolute;
+  	top: 131px;
+  	left: 263px;
+  	width: 927px;
+  	height: 135px;
+  	object-fit: cover;
+}
+.home-screen-ver3-daikon-games-logo-1 {
+  	position: absolute;
+  	top: 2617px;
+  	left: 693px;
+  	width: 747px;
+  	height: 109px;
+  	object-fit: cover;
+}
+.daikon-dead-1-icon {
+  	position: absolute;
+  	top: 220px;
+  	left: 1133px;
+  	width: 261.7px;
+  	height: 261.7px;
+  	object-fit: contain;
+}
+.rectangle-div {
+  	position: absolute;
+  	top: 331px;
+  	left: 492px;
+  	border-radius: 22px;
+  	background-color: #a6e1ff;
+  	width: 449px;
+  	height: 91px;
+}
+.about-us {
+  	position: absolute;
+  	top: 349px;
+  	left: 606px;
+  	font-size: 47px;
+  	line-height: 116.83%;
+  	color: #fff;
+  	text-align: center;
+}
+.home-screen-ver3-home-screen-ver3-child {
+  	position: absolute;
+  	top: 1019px;
+  	/* center and span the full viewport width */
+  	left: 50%;
+  	transform: translateX(-50%);
+  	background-color: #c8f2c8;
+  	width: 100vw;
+  	height: 1256px;
+}
+.home-screen-ver3-child2 {
+  	position: absolute;
+  	top: 1738px;
+  	left: 179px;
+  	background-color: #dcfffd;
+  	width: 1102px;
+  	height: 387px;
+}
+.recreation-of-online-container {
+  	position: absolute;
+  	top: 1677px;
+  	left: 171px;
+  	font-weight: 600;
+}
+.online-air-hockey-game {
+	text-decoration: underline;
+}
+
+.home-screen-ver3-online-air-hockey-game {
+	position: absolute;
+	top: 2060px;
+	left: 865px;
+	font-size: 20px;
+	text-decoration: underline;
+	font-weight: 600;
+	font-family: 'Libre Franklin', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+	color: #3153ff;
+	cursor: pointer;
+	/* sit above other positioned elements so clicks reach the link */
+	z-index: 1000;
+}
+
+.home-screen-ver3-online-air-hockey-game a {
+	color: inherit;
+	text-decoration: underline;
+	display: inline-block;
+	/* ensure the anchor can receive pointer events */
+	pointer-events: auto;
+}
+.home-screen-ver3-child3 {
+  	position: absolute;
+  	top: 1268px;
+  	left: 180px;
+  	background-color: #f6ffd7;
+  	width: 1102px;
+  	height: 345px;
+}
+.replica-of-the-container {
+  	position: absolute;
+  	top: 1203px;
+  	left: 177px;
+  	font-weight: 600;
+  	color: #000;
+}
+.home-screen-ver3-chrome-dino-game {
+  	position: absolute;
+  	top: 1574px;
+  	left: 906px;
+  	font-size: 20px;
+  	text-decoration: underline;
+  	font-weight: 600;
+	font-family: 'Libre Franklin', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  	color: #3153ff;
+  	cursor: pointer;
+}
+
+.rectangle-icon {
+  	position: absolute;
+  	top: 1807px;
+  	left: 247px;
+  	width: 234px;
+  	height: 208px;
+  	object-fit: cover;
+}
+.as-a-follow-up {
+  	position: absolute;
+  	top: 1814px;
+  	left: 508px;
+  	font-size: 20px;
+  	line-height: 30px;
+  	font-family: Inter;
+  	display: inline-block;
+	font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  	width: 763px;
+  	height: 311px;
+}
+.we-started-our {
+  	position: absolute;
+  	top: 1309px;
+  	left: 490px;
+  	font-size: 20px;
+  	line-height: 30px;
+  	font-family: Inter;
+  	display: inline-block;
+	font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  	width: 782px;
+  	height: 265px;
+}
+.rectangle-parent {
+  	position: absolute;
+  	top: 1306px;
+  	left: 213.98px;
+  	width: 251px;
+  	height: 228px;
+}
+.group-child {
+  	position: absolute;
+  	top: 0px;
+  	left: 0px;
+  	background-color: #fff;
+  	border: 4px solid #000;
+  	box-sizing: border-box;
+  	width: 251px;
+  	height: 228px;
+}
+.image-14-icon {
+  	position: absolute;
+  	top: 1.1px;
+  	left: 13.15px;
+  	width: 225.2px;
+  	height: 226.4px;
+  	object-fit: cover;
+}
+.home-screen-ver3-child4 {
+  	position: absolute;
+  	top: 946px;
+  	left: 449px;
+  	border-radius: 22px;
+  	background-color: #fff;
+  	width: 572px;
+  	height: 148px;
+}
+.our-projects {
+  	position: absolute;
+  	top: 991px;
+  	left: 582px;
+  	font-size: 48px;
+  	line-height: 116.83%;
+  	font-weight: 800;
+  	text-align: center;
+}
+.rectangle-group {
+  	position: absolute;
+  	top: 2297px;
+  	left: 1063px;
+  	width: 347px;
+  	height: 135.3px;
+  	text-align: center;
+  	font-family: Inter;
+}
+.group-item {
+  	position: absolute;
+  	top: 39px;
+  	left: 112px;
+  	border-radius: 28px;
+  	background-color: #fff;
+  	width: 221px;
+  	height: 79px;
+}
+.back-to-top {
+  	position: absolute;
+  	top: 59px;
+  	left: 94px;
+  	font-weight: 500;
+  	display: inline-block;
+	font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  	width: 253px;
+  	height: 72px;
+    	/* Make it look and behave like a clickable link */
+    	/*text-decoration: underline;*/
+		color: black;
+    	cursor: pointer;
+}
+.daikon-run2-2-icon {
+  	position: absolute;
+  	top: 0px;
+  	left: 0px;
+  	width: 135.3px;
+  	height: 135.3px;
+  	object-fit: contain;
+}
+

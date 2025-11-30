@@ -1,16 +1,115 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport", content="width=device-width, initial-scale=1.0">
-        <title>Simple Game Portfolio</title>
-        <script src="server.js"></script>
-    </head>
-    <body>
-        <h1>Simple Game Portfolio Home Page</h1>
-        <p><a href="dino.html">Play Dino Game</a></p>
-        <p><a href="/air-hockey/">Play Air Hockey</a></p>
-        <p><a href="totem.html">Play Prophecy of the Totem</a></p>        
-        <p><a href="BarAgent.html">Access AI Bar Agent</a></p>
-    </body>
+<head>
+  	<meta charset="utf-8">
+  	<meta name="viewport" content="initial-scale=1, width=device-width">
+  	
+  	<link rel="stylesheet"  href="./styles.css" />
+  	<!-- Adobe Fonts kit: provides Libre Franklin and Inter -->
+  	<link rel="stylesheet" href="https://use.typekit.net/ayf3qhy.css">
+  	
+  	
+  	
+</head>
+<body>
+  	
+  	<div class="home-screen-ver3">
+    		<div class="home-screen-ver3-child">
+    		</div>
+    		<div class="dino-game-air">Dino Game<br>Air Hockey<br>game 3...</div>
+    		<div class="home-screen-ver3-item">
+    		</div>
+    		<div class="nagato">Nagato</div>
+    		<div class="home-screen-ver3-inner">
+    		</div>
+    		<div class="sakura">Sakura</div>
+    		<div class="programming-ui-ux">Programming, UI, UX, game director</div>
+    		<div class="uiux-design-game">UI/UX design, game arts</div>
+    		<div class="we-are-two">We are two college students who combined our skills—one specializing in programming, the other in design—to create a platform that brings interactive gaming to life. We started this as a project that would utilize both of our skills. Now, we aim to continue developing games that are engaging and visually refined to share through this website.<br></div>
+    		<img class="daikon-run2-1-icon" src="img/daikon_shadow2.png" alt="">
+    		
+    		<div class="frame-div">
+    		</div>
+    		<a class="daikongamesgmailcom" href="mailto:daikongames@gmail.com" target="_blank">daikongames@gmail.com</a>
+    		<img class="image-10-icon" src="img/email.png" alt="">
+    		
+    		<img class="image-9-icon" src="img/instagram.png" alt="">
+    		
+    		<div class="daikongames1234">@daikongames1234</div>
+    		<b class="contact-us">Contact us!</b>
+    		<img class="daikon-jump-1-icon" src="img/daikon-games.png" alt="">
+    		
+    		<b class="daikongames"></b>
+    		<img class="daikon-games-logo-1" src="img/daikon_games_logo_crop.png" alt="">
+    		
+    		<img class="home-screen-ver3-daikon-games-logo-1" src="img/daikon_games_logo_crop.png" alt="">
+    		
+    		<img class="daikon-dead-1-icon" src="img/daikon_shadow1_left_tilt.png" alt="">
+    		
+    		<div class="rectangle-div">
+    		</div>
+    		<b class="about-us">About Us:</b>
+    		<div class="home-screen-ver3-home-screen-ver3-child">
+    		</div>
+    		<div class="home-screen-ver3-child2">
+    		</div>
+    		<div class="recreation-of-online-container">Recreation of
+      			<span class="online-air-hockey-game"> Online Air-Hockey Game:</span>
+    		</div>
+			<p class="home-screen-ver3-online-air-hockey-game">
+  				<a href="./air-hockey" target="_blank">Online Air-Hockey Game (click here to play)</a>
+			</p>
+
+    		<div class="home-screen-ver3-child3">
+    		</div>
+    		<div class="replica-of-the-container" id="replicaOfThe">Replica of the
+      			<span class="online-air-hockey-game">Chrome Dino Game:</span>
+    		</div>
+			<a class="home-screen-ver3-chrome-dino-game" id="chromeDinoGame" href="dino.html">Chrome Dino Game (click here to play)</a>
+    		<img class="rectangle-icon" src="img/hockey-preview.png" alt="">
+    		
+    		<div class="as-a-follow-up">As a follow-up, we developed an online multiplayer air hockey game to tackle the challenges of real-time synchronization and live player interaction. This project features smooth paddle dynamics, friction-aware puck movement, and responsive collision handling—all powered by custom physics logic. The most demanding aspect was creating reliable server-client communication to ensure seamless multiplayer gameplay without jitter or desync, especially during fast-paced exchanges. This project demonstrates my ability to architect performant networked game systems, laying the groundwork for more advanced multiplayer challenges.</div>
+    		<div class="we-started-our">We started our web game development journey with recreating the Chrome Dino game, but with the daikon radish, chosen for its simplicity and customizability as an ideal starting point. This project allowed us to focus on building a modular and responsive game loop to recreate the simple, yet engaging game experience. We implemented physics-based mechanics for jumping and collision detection, ensuring smooth synchronization of movements across frames, as well as the obstacles like the FILL(redesigned cactus) and the FILL(redesigned birds) to create our version of the Dino game.</div>
+    		<div class="rectangle-parent">
+      			<div class="group-child">
+      			</div>
+      			<img class="image-14-icon" src="img/daikon-preview.png" alt="">
+      			
+    		</div>
+    		<div class="home-screen-ver3-child4">
+    		</div>
+    		<div class="our-projects">Our Projects:</div>
+    		<div class="rectangle-group">
+      			<div class="group-item">
+      			</div>
+	      		<a class="back-to-top" href="#" role="button" aria-label="Back to top">Back to top</a>
+      			<img class="daikon-run2-2-icon" src="img/daikon_shadow2_tilt.png" alt="">
+      			
+    		</div>
+  	</div>
+  	
+  	
+  	
+  	
+  	<script>
+    		var airHockey = document.getElementById("airHockey");
+    		if(airHockey) {
+      			airHockey.addEventListener("click", function (e) {
+        				// Add your code here
+      			});
+    		}
+    		// Back to top: smooth scroll to page top when clicked
+			var backToTop = document.querySelector('.back-to-top');
+			if (backToTop) {
+				backToTop.addEventListener('click', function (e) {
+					e.preventDefault();
+					window.scrollTo({ top: 0, behavior: 'smooth' });
+				});
+			}
+    		var chromeDinoGame = document.getElementById("chromeDinoGame");
+    		if(chromeDinoGame) {
+      			chromeDinoGame.addEventListener("click", function (e) {
+        				// Add your code here
+      			});
+    		}</script></body>
 </html>
